@@ -1,0 +1,17 @@
+import type { UUID } from 'crypto';
+
+export interface IUser {
+  id?: UUID;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface IUserCreate extends IUser {
+  password: string;
+}
+
+export interface IUserResponse {
+  message: string;
+  user: IUser;
+}

@@ -1,0 +1,54 @@
+services:
+
+  # ─────────────────────────────────────────
+  # Frontend (Quasar SPA + Nginx)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner          # apenas o estágio de produção
+    image: saj-frontend:latest
+    container_name: saj-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8000}:80"
+    environment:
+      - TZ=America/Sao_Paulo
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - saj-net
+
+  # ─────────────────────────────────────────
+  # Mock API (json-server) — dev/staging only
+  # Comente ou remova em produção real
+  # ─────────────────────────────────────────
+  mock-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder         # reutiliza a imagem de build
+    image: saj-mock:latest
+    container_name: saj-mock
+    restart: unless-stopped
+    working_dir: /app
+    command: ["npm", "run", "mock"]
+    ports:
+      - "${MOCK_PORT:-3000}:3000"
+    volumes:
+      - ./mock:/app/mock:ro   # monta apenas a pasta do mock
+    environment:
+      - TZ=America/Sao_Paulo
+    networks:
+      - saj-net
+    profiles:
+      - mock                  # inicia somente com: docker compose --profile mock up
+
+networks:
+  saj-net:
+    driver: bridge

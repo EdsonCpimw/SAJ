@@ -1,0 +1,35 @@
+# Dependências (serão instaladas no container)
+node_modules/
+.pnpm-store/
+
+# Artefatos de build locais
+dist/
+.quasar/
+
+# Ambientes e secrets
+.env
+.env.*
+!.env.example
+
+# Ferramentas de desenvolvimento
+.git/
+.gitignore
+.editorconfig
+.eslintcache
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Docs e CI (não precisam ir para a imagem)
+README.md
+*.md
+.github/
