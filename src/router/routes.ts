@@ -29,12 +29,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'create',
         name: 'user-create',
-        component: () => import('pages/users/CreateUser.vue'),
+        component: () => import('pages/users/UserForm.vue'),
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
             { label: 'Usuários', icon: 'people', to: { name: 'user-list' } },
             { label: 'Novo usuário', icon: 'person_add' },
+          ],
+        },
+      },
+      {
+        path: 'edit/:id',
+        name: 'user-edit',
+        component: () => import('pages/users/UserForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Usuários', icon: 'people', to: { name: 'user-list' } },
+            { label: 'Editar Usuário', icon: 'edit' },
           ],
         },
       },

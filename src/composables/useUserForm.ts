@@ -91,6 +91,28 @@ export function useUserForm() {
     }
   }
 
+  async function updateUser(id: string) {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await UserService.updateUserById(id, formUser);
+      user.value = response;
+    } catch (erro) {
+      if (axios.isAxiosError(erro)) {
+        const data = erro.response?.data;
+        error.value = data?.message || data?.error || `Erro desconhecido`;
+      } else {
+        error.value = 'Erro inesperado';
+      }
+    }
+  }
+
+  function fillForm(user: IUser) {
+    formUser.name = user.name;
+    formUser.email = user.email;
+    formUser.phone = user.phone;
+  }
+
   return {
     formUser,
     formCompany,
@@ -103,5 +125,7 @@ export function useUserForm() {
     resetFormUser,
     resetFormCompany,
     createUser,
+    fillForm,
+    updateUser,
   };
 }

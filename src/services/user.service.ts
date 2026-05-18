@@ -19,4 +19,14 @@ export const UserService = {
     const { data } = await api.post<IUserCreate>('/users', paylod);
     return data;
   },
+
+  async findById(id: string): Promise<IUser> {
+    const { data } = await api.get<IUser>(`/users/${id}`);
+    return data;
+  },
+
+  async updateUserById(id: string, payload: IUser): Promise<IUser> {
+    const { data } = await api.put<IUser>(`/users/${id}`, payload);
+    return data;
+  },
 };

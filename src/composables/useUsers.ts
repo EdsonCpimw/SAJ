@@ -10,7 +10,6 @@ export function useUsers() {
   async function findAllUsers() {
     loading.value = true;
     error.value = null;
-
     try {
       rows.value = await UserService.findAll();
     } catch (err) {

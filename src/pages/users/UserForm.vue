@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useUserForm } from 'src/composables/useUserForm';
+import { UserService } from 'src/services/user.service';
 
 const router = useRouter();
+const route = useRoute();
 const $q = useQuasar();
 const loading = ref(false);
 const formRef = ref();
@@ -16,14 +18,43 @@ const {
   rulesUser,
   createUser,
   resetForm,
+  fillForm,
+  updateUser,
 } = useUserForm();
+
+const isEditing = computed(() => !!route.params.id);
+const title = computed(() => (isEditing.value ? 'Editar Usuário' : 'Novo Usuário'));
+const subtitle = computed(() =>
+  isEditing.value ? 'Editar informações do Usuário' : 'Dados do usuário',
+);
+const btnLabel = computed(() => (isEditing.value ? 'Atualizar' : 'Salvar'));
+
+onMounted(async () => {
+  if (isEditing.value) {
+    const user = await UserService.findById(route.params.id as string);
+    fillForm(user);
+    console.log(formUser.name);
+  }
+});
+
+function goBack() {
+  void router.push({ name: 'user-list' });
+}
 
 async function onSubmit() {
   const valid = await formRef.value.validate();
   if (!valid) return;
-
-  loading.value = true;
   try {
+    if (isEditing.value) {
+      await updateUser(route.params.id as string);
+      $q.notify({
+        type: 'positive',
+        message: 'Usuário atualizado com sucesso!',
+        position: 'top',
+      });
+      await router.push({ name: 'user-list' });
+      return;
+    }
     await createUser();
     $q.notify({
       type: 'positive',
@@ -44,14 +75,14 @@ async function onSubmit() {
   <q-page class="q-pa-md">
     <!-- CABEÇALHO -->
     <div class="row items-center q-mb-md">
-      <q-btn flat round icon="arrow_back" color="grey-7" @click="router.push({ name: 'users' })" />
-      <div class="text-h6 text-weight-bold q-ml-sm">Novo Usuário</div>
+      <q-btn flat round icon="arrow_back" color="grey-7" @click="goBack" />
+      <div class="text-h6 text-weight-bold q-ml-sm">{{ title }}</div>
     </div>
 
     <!-- CARD DO FORMULÁRIO — mesmo tamanho da listagem -->
     <q-card flat bordered>
       <q-card-section>
-        <div class="text-subtitle1 text-weight-medium text-grey-8">Dados do usuário</div>
+        <div class="text-subtitle1 text-weight-medium text-grey-8">{{ subtitle }}</div>
         <div class="text-caption text-grey-5">Preencha todos os campos obrigatórios</div>
       </q-card-section>
 
@@ -99,7 +130,7 @@ async function onSubmit() {
           </div>
 
           <!-- SENHA -->
-          <div class="col-12 col-md-6">
+          <div v-if="!isEditing" class="col-12 col-md-6">
             <q-input
               v-model="formUser.password"
               label="Senha"
@@ -120,7 +151,7 @@ async function onSubmit() {
             </q-input>
           </div>
           <!-- CONFIRMAÇÃO DE SENHA -->
-          <div class="col-12 col-md-6">
+          <div v-if="!isEditing" class="col-12 col-md-6">
             <q-input
               v-model="confirmPassword"
               label="Confirme a senha"
@@ -149,7 +180,7 @@ async function onSubmit() {
       <q-card-actions class="q-pa-md">
         <q-btn flat label="Cancelar" color="grey-7" @click="router.push({ name: 'users' })" />
         <q-space />
-        <q-btn label="Salvar" color="primary" icon="save" :loading="loading" @click="onSubmit" />
+        <q-btn :label="btnLabel" color="primary" icon="save" :loading="loading" @click="onSubmit" />
       </q-card-actions>
     </q-card>
   </q-page>
