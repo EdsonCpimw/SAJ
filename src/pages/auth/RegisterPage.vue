@@ -88,17 +88,26 @@
               </template>
             </q-input>
 
-            <q-input
-              v-model="confirmPassword"
-              label="Confirmar senha"
-              outlined
-              :type="showPassword ? 'text' : 'password'"
-              :rules="rulesUser.confirmPassword"
-            >
-              <template #prepend>
-                <q-icon name="lock_outline" />
-              </template>
-            </q-input>
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="confirmPassword"
+                label="Confirme a senha"
+                outlined
+                :type="showConfirmPassword ? 'text' : 'password'"
+                :rules="rulesUser.password"
+              >
+                <template #prepend>
+                  <q-icon name="lock" />
+                </template>
+                <template #append>
+                  <q-icon
+                    :name="showConfirmPassword ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  />
+                </template>
+              </q-input>
+            </div>
           </q-form>
         </q-step>
 
@@ -150,8 +159,16 @@ const $q = useQuasar();
 const step = ref(1);
 const authStore = useAuthStore();
 const loading = ref(false);
-const { formUser, formCompany, confirmPassword, showPassword, rulesUser, rulesCompany, resetForm } =
-  useUserForm();
+const {
+  formUser,
+  formCompany,
+  confirmPassword,
+  showPassword,
+  showConfirmPassword,
+  rulesUser,
+  rulesCompany,
+  resetForm,
+} = useUserForm();
 
 const stepEscritorioRef = ref();
 const stepUsuarioRef = ref();

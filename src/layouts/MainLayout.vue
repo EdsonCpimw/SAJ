@@ -29,23 +29,16 @@
     </q-drawer>
 
     <q-page-container>
-      <div id="q-app">
-        <div class="q-pa-md q-gutter-sm">
-          <q-breadcrumbs>
-            <q-breadcrumbs-el icon="home" to="/"></q-breadcrumbs-el>
-            <q-breadcrumbs-el
-              label="Docs"
-              icon="widgets"
-              to="/start/pick-quasar-flavour"
-            ></q-breadcrumbs-el>
-            <q-breadcrumbs-el
-              label="Breadcrumbs"
-              icon="navigation"
-              to="/vue-components/breadcrumbs"
-            ></q-breadcrumbs-el>
-            <q-breadcrumbs-el label="Build" icon="build"></q-breadcrumbs-el>
-          </q-breadcrumbs>
-        </div>
+      <div class="q-pa-md q-pb-none" v-if="breadcrumbs.length">
+        <q-breadcrumbs>
+          <q-breadcrumbs-el
+            v-for="(bc, index) in breadcrumbs"
+            :key="index"
+            :label="bc.label"
+            :icon="bc.icon"
+            :to="bc.to"
+          />
+        </q-breadcrumbs>
       </div>
       <router-view />
     </q-page-container>
@@ -55,6 +48,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import type { IBreadcrumb } from 'src/types/router.types';
+
+const route = useRoute();
+
+const breadcrumbs = computed<IBreadcrumb[]>(() => (route.meta.breadcrumbs as IBreadcrumb[]) ?? []);
 
 const linksList: EssentialLinkProps[] = [
   {

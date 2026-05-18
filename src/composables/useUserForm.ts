@@ -1,7 +1,16 @@
 import { reactive, ref } from 'vue';
-import type { IUserCreate } from 'src/types/user.types';
+import type { IUser, IUserCreate } from 'src/types/user.types';
+import axios from 'axios';
+import { UserService } from 'src/services/user.service';
 
 export function useUserForm() {
+  const confirmPassword = ref('');
+  const showPassword = ref(false);
+  const showConfirmPassword = ref(false);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const user = ref<IUser | null>(null);
+
   const formCompany = reactive({
     name: '',
     document: '',
@@ -24,8 +33,6 @@ export function useUserForm() {
     phone: '',
     password: '',
   });
-  const confirmPassword = ref('');
-  const showPassword = ref(false);
 
   const rulesUser = {
     name: [
@@ -51,22 +58,50 @@ export function useUserForm() {
   };
 
   function resetForm() {
+    resetFormUser();
+    resetFormCompany();
+  }
+
+  function resetFormUser() {
     formUser.name = '';
     formUser.email = '';
     formUser.phone = '';
     formUser.password = '';
     confirmPassword.value = '';
+  }
+
+  function resetFormCompany() {
     formCompany.name = '';
     formCompany.document = '';
+  }
+
+  async function createUser() {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await UserService.saveUser(formUser);
+      user.value = response;
+    } catch (erro) {
+      if (axios.isAxiosError(erro)) {
+        const data = erro.response?.data;
+        error.value = data?.message || data?.error || `Erro desconhecido`;
+      } else {
+        error.value = 'Erro inesperado';
+      }
+    }
   }
 
   return {
     formUser,
     formCompany,
     confirmPassword,
+    showConfirmPassword,
     showPassword,
     rulesUser,
     rulesCompany,
     resetForm,
+    resetFormUser,
+    resetFormCompany,
+    createUser,
   };
 }
