@@ -4,8 +4,7 @@ import type { ICompanyCreate } from 'src/types/company.types';
 
 export const UserService = {
   async register(payload: ICompanyCreate): Promise<ICompanyCreate> {
-    // const { data } = await api.post<IUserResponse>('/register', payload);
-    const { data } = await api.post<ICompanyCreate>('/CompanyUser', payload);
+    const { data } = await api.post<ICompanyCreate>('/register', payload);
     debugger;
     return data;
   },
