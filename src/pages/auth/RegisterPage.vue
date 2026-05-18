@@ -180,7 +180,6 @@ async function nextStep() {
 
 async function onSubmit() {
   try {
-    debugger;
     await authStore.register({
       company: toRaw(formCompany),
       user: toRaw(formUser),

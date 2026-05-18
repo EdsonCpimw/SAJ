@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-table title="Lista de usuários" :rows="rows" :columns="columns" row-key="id">
+      <!-- BOTÃO NOVO USUÁRIO -->
       <template #top-right>
         <q-btn
           color="primary"
@@ -9,18 +10,28 @@
           @click="$router.push({ name: 'user-create' })"
         />
       </template>
+
+      <!-- COLUNA ATIVO -->
+      <template #body-cell-active="props">
+        <q-td :props="props">
+          <q-badge :color="props.row.active ? 'green' : 'red'">
+            {{ props.row.active ? 'Ativo' : 'Inativo' }}
+          </q-badge>
+        </q-td>
+      </template>
+
+      <!-- COLUNA AÇÕES -->
       <template #body-cell-actions="props">
         <q-td :props="props">
           <q-btn
             flat
             round
             color="primary"
-            icon="visibility"
-            @click="$router.push({ name: 'user-detail', params: { id: props.row.id } })"
+            :icon="props.row.active ? 'check_circle' : 'cancel'"
+            @click="confirmToggleUser(props.row)"
           >
-            <q-tooltip>Ver detalhes</q-tooltip>
+            <q-tooltip>{{ props.row.active ? 'Inativar usuário' : 'Ativar usuário' }}</q-tooltip>
           </q-btn>
-
           <q-btn
             flat
             round
@@ -36,10 +47,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { QTableColumn } from 'quasar';
+import { useQuasar, type QTableColumn } from 'quasar';
 import { useUsers } from 'src/composables/useUsers';
+import type { IUser } from 'src/types/user.types';
 
-const { rows } = useUsers();
+const { rows, inactiveUser } = useUsers();
+const $q = useQuasar();
 
 const columns: QTableColumn[] = [
   {
@@ -65,11 +78,31 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
+    name: 'active',
+    label: 'Ativo',
+    align: 'left',
+    field: 'active',
+  },
+  {
     name: 'actions',
     label: 'Ações',
     field: 'actions',
     align: 'center' as const,
   },
 ];
+
+function confirmToggleUser(user: IUser) {
+  $q.dialog({
+    title: user.active ? 'Inativar usuário' : 'Ativar usuário',
+    message: user.active
+      ? `Tem certeza que deseja inativar o usuário? ${user.name}`
+      : `Tem certeza que deseja ativar o usuário? ${user.name}`,
+    cancel: { label: 'Cancelar', flat: true, color: 'grey-7' },
+    ok: { label: user.active ? 'Inativar' : 'Ativar', color: user.active ? 'red' : 'green' },
+    persistent: true,
+  }).onOk(() => {
+    void inactiveUser(user.id!);
+  });
+}
 </script>
 <style scoped></style>

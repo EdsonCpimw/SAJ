@@ -33,7 +33,6 @@ onMounted(async () => {
   if (isEditing.value) {
     const user = await UserService.findById(route.params.id as string);
     fillForm(user);
-    console.log(formUser.name);
   }
 });
 
@@ -178,7 +177,7 @@ async function onSubmit() {
 
       <!-- AÇÕES -->
       <q-card-actions class="q-pa-md">
-        <q-btn flat label="Cancelar" color="grey-7" @click="router.push({ name: 'users' })" />
+        <q-btn flat label="Cancelar" color="grey-7" @click="goBack" />
         <q-space />
         <q-btn :label="btnLabel" color="primary" icon="save" :loading="loading" @click="onSubmit" />
       </q-card-actions>

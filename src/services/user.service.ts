@@ -5,7 +5,6 @@ import type { ICompanyCreate } from 'src/types/company.types';
 export const UserService = {
   async register(payload: ICompanyCreate): Promise<ICompanyCreate> {
     const { data } = await api.post<ICompanyCreate>('/register', payload);
-    debugger;
     return data;
   },
 
@@ -26,6 +25,11 @@ export const UserService = {
 
   async updateUserById(id: string, payload: IUser): Promise<IUser> {
     const { data } = await api.put<IUser>(`/users/${id}`, payload);
+    return data;
+  },
+
+  async inactiveUserById(id: string): Promise<IUser> {
+    const { data } = await api.put<IUser>(`/users/${id}/active`);
     return data;
   },
 };
