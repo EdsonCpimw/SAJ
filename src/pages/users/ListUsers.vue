@@ -14,7 +14,7 @@
       <!-- COLUNA ATIVO -->
       <template #body-cell-active="props">
         <q-td :props="props">
-          <q-badge :color="props.row.active ? 'green' : 'red'">
+          <q-badge :color="props.row.active ? 'positive' : 'negative'">
             {{ props.row.active ? 'Ativo' : 'Inativo' }}
           </q-badge>
         </q-td>
@@ -26,8 +26,8 @@
           <q-btn
             flat
             round
-            color="primary"
-            :icon="props.row.active ? 'check_circle' : 'cancel'"
+            :color="props.row.active ? 'positive' : 'grey-5'"
+            :icon="props.row.active ? 'toggle_on' : 'toggle_off'"
             @click="confirmToggleUser(props.row)"
           >
             <q-tooltip>{{ props.row.active ? 'Inativar usuário' : 'Ativar usuário' }}</q-tooltip>
@@ -98,7 +98,10 @@ function confirmToggleUser(user: IUser) {
       ? `Tem certeza que deseja inativar o usuário? ${user.name}`
       : `Tem certeza que deseja ativar o usuário? ${user.name}`,
     cancel: { label: 'Cancelar', flat: true, color: 'grey-7' },
-    ok: { label: user.active ? 'Inativar' : 'Ativar', color: user.active ? 'red' : 'green' },
+    ok: {
+      label: user.active ? 'Inativar' : 'Ativar',
+      color: user.active ? 'negative' : 'positive',
+    },
     persistent: true,
   }).onOk(() => {
     void inactiveUser(user.id!);
