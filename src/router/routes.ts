@@ -11,6 +11,9 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/AuthLayout.vue'),
     children: [{ path: 'register', component: () => import('pages/auth/RegisterPage.vue') }],
   },
+  /*
+   * ROTAS DE USUÁRIOS
+   */
   {
     path: '/users',
     component: () => import('layouts/MainLayout.vue'),
@@ -52,17 +55,50 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
-  // {
-  //   path: '/users/:id',
-  //   name: 'user-detail',
-  //   component: () => import('pages/users/UserDetailPage.vue'),
-  // },
-  // {
-  //   path: '/users/:id/edit',
-  //   name: 'user-edit',
-  //   component: () => import('pages/users/UserEditPage.vue'),
-  // },
+  /*
+   * ROTAS DE PROCESSOS
+   */
+  {
+    path: '/process',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'process-list',
+        component: () => import('pages/process/ListProcess.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'people' },
+          ],
+        },
+      },
+      {
+        path: 'create',
+        name: 'process-create',
+        component: () => import('pages/users/UserForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'people', to: { name: 'user-list' } },
+            { label: 'Cadastro de Processos', icon: 'person_add' },
+          ],
+        },
+      },
+      {
+        path: 'edit/:id',
+        name: 'process-edit',
+        component: () => import('pages/users/UserForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'people', to: { name: 'user-list' } },
+            { label: 'Editar Processos', icon: 'edit' },
+          ],
+        },
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it

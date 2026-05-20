@@ -90,7 +90,7 @@ const linksList: EssentialLinkProps[] = [
     title: 'Processos',
     caption: 'Gerenciar Processos',
     icon: 'balance',
-    link: 'https://github.com/quasarframework',
+    link: '/process',
   },
 ];
 
