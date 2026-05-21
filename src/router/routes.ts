@@ -76,23 +76,23 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'create',
         name: 'process-create',
-        component: () => import('pages/users/UserForm.vue'),
+        component: () => import('pages/process/ProcessForm.vue'),
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
-            { label: 'Processos', icon: 'people', to: { name: 'user-list' } },
-            { label: 'Cadastro de Processos', icon: 'person_add' },
+            { label: 'Processos', icon: 'people', to: { name: 'process-list' } },
+            { label: 'Cadastro de processos', icon: 'person_add' },
           ],
         },
       },
       {
         path: 'edit/:id',
         name: 'process-edit',
-        component: () => import('pages/users/UserForm.vue'),
+        component: () => import('pages/process/ProcessForm.vue'),
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
-            { label: 'Processos', icon: 'people', to: { name: 'user-list' } },
+            { label: 'Processos', icon: 'people', to: { name: 'process-list' } },
             { label: 'Editar Processos', icon: 'edit' },
           ],
         },

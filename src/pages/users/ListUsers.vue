@@ -1,6 +1,13 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Lista de usuários" :rows="rows" :columns="columns" row-key="id">
+    <q-table
+      title="Lista de usuários"
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      :pagination="{ rowsPerPage: 10 }"
+      rows-per-page-label="Registros por página:"
+    >
       <!-- BOTÃO NOVO USUÁRIO -->
       <template #top-right>
         <q-btn

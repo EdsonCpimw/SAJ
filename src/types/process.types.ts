@@ -1,6 +1,5 @@
 import type { UUID } from 'crypto';
-
-export type ProcessStatus = 'OPEN' | 'IN_PROGRESS' | 'WAITING' | 'FINISHED' | 'CANCELLED';
+import type { ProcessStatus } from './enum/process-status.enum';
 
 export interface IProcess {
   id?: UUID;
@@ -11,7 +10,14 @@ export interface IProcess {
 
   title: string;
   processNumber: string;
-  description: Text;
+  description: string;
   status: ProcessStatus;
   createdAt?: string;
+}
+
+export interface IProcessCreate {
+  title: string;
+  processNumber: string;
+  description: string;
+  status: ProcessStatus;
 }

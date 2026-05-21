@@ -1,21 +1,28 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Lista de Processos" :rows="rows" :columns="columns" row-key="id">
+    <q-table
+      title="Lista de Processos"
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      :pagination="{ rowsPerPage: 10 }"
+      rows-per-page-label="Registros por página:"
+    >
       <!-- BOTÃO NOVO PROCESSO -->
       <template #top-right>
         <q-btn
           color="primary"
           icon="add"
           label="Novo Processo"
-          @click="$router.push({ name: 'user-create' })"
+          @click="$router.push({ name: 'process-create' })"
         />
       </template>
 
       <!-- COLUNA STATUS -->
       <template #body-cell-status="props">
         <q-td :props="props">
-          <q-badge :color="getStatusColor(props.row.status)">
-            {{ getStatusLabel(props.row.status) }}
+          <q-badge :color="getProcessStatusColor(props.row.status)">
+            {{ getProcessStatusLabel(props.row.status) }}
           </q-badge>
         </q-td>
       </template>
@@ -28,7 +35,7 @@
             round
             color="orange"
             icon="edit"
-            @click="$router.push({ name: 'user-edit', params: { id: props.row.id } })"
+            @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
           >
             <q-tooltip>Editar</q-tooltip>
           </q-btn>
@@ -40,9 +47,10 @@
 <script setup lang="ts">
 import { type QTableColumn } from 'quasar';
 import { useProcess } from 'src/composables/useProcess';
+import { getProcessStatusColor, getProcessStatusLabel } from 'src/types/enum/process-status.enum';
 import type { IProcess } from 'src/types/process.types';
 
-const { rows, getStatusColor, getStatusLabel } = useProcess();
+const { rows } = useProcess();
 
 const columns: QTableColumn[] = [
   {

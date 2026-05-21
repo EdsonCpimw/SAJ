@@ -24,34 +24,10 @@ export function useProcess() {
     await findAllProcess();
   });
 
-  function getStatusColor(status: string) {
-    const colors: Record<string, string> = {
-      OPEN: 'primary',
-      IN_PROGRESS: 'warning',
-      WAITING: 'purple',
-      FINISHED: 'positive',
-      CANCELLED: 'negative',
-    };
-    return colors[status] || 'grey';
-  }
-
-  function getStatusLabel(status: string) {
-    const labels: Record<string, string> = {
-      OPEN: 'Aberto',
-      IN_PROGRESS: 'Em andamento',
-      WAITING: 'Aguardando',
-      FINISHED: 'Concluído',
-      CANCELLED: 'Cancelado',
-    };
-    return labels[status] || 'status desconhecido';
-  }
-
   return {
     rows,
     loading,
     error,
     findAllProcess,
-    getStatusColor,
-    getStatusLabel,
   };
 }

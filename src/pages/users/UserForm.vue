@@ -23,7 +23,7 @@ const {
 } = useUserForm();
 
 const isEditing = computed(() => !!route.params.id);
-const title = computed(() => (isEditing.value ? 'Editar Usuário' : 'Novo Usuário'));
+const title = computed(() => (isEditing.value ? 'Editar usuário' : 'Novo usuário'));
 const subtitle = computed(() =>
   isEditing.value ? 'Editar informações do Usuário' : 'Dados do usuário',
 );
