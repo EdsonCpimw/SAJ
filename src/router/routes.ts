@@ -69,7 +69,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
-            { label: 'Processos', icon: 'people' },
+            { label: 'Processos', icon: 'folder_open' },
           ],
         },
       },
@@ -80,8 +80,8 @@ const routes: RouteRecordRaw[] = [
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
-            { label: 'Processos', icon: 'people', to: { name: 'process-list' } },
-            { label: 'Cadastro de processos', icon: 'person_add' },
+            { label: 'Processos', icon: 'folder_open', to: { name: 'process-list' } },
+            { label: 'Cadastro de processos', icon: 'gavel' },
           ],
         },
       },
