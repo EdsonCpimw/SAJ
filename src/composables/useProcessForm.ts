@@ -3,6 +3,8 @@ import { ProcessStatus } from 'src/types/enum/process-status.enum';
 import type { IProcess } from 'src/types/process.types';
 import { reactive, ref } from 'vue';
 import axios from 'axios';
+import { ProcessPriority } from 'src/types/enum/process-priority.enum';
+import { ProcessLegalArea } from 'src/types/enum/process-legal-area.enum';
 
 export function useProcessForm() {
   const loading = ref(false);
@@ -12,8 +14,13 @@ export function useProcessForm() {
   const formProcess = reactive<IProcess>({
     title: '',
     processNumber: '',
+    cnpj: '',
     description: '',
+    legalArea: ProcessLegalArea.ADMINISTRATIVE,
+    courtDivision: '',
+    court: '',
     status: ProcessStatus.OPEN,
+    priority: ProcessPriority.MEDIUM,
   });
 
   function resetFormProcess() {
@@ -21,6 +28,11 @@ export function useProcessForm() {
     formProcess.title = '';
     formProcess.description = '';
     formProcess.status = ProcessStatus.OPEN;
+    formProcess.cnpj = '';
+    formProcess.legalArea = ProcessLegalArea.ADMINISTRATIVE;
+    formProcess.courtDivision = '';
+    formProcess.court = '';
+    formProcess.priority = ProcessPriority.MEDIUM;
   }
 
   const rulesProcess = {
@@ -29,13 +41,6 @@ export function useProcessForm() {
     description: [(v: string) => !!v || 'Descrição é obrigatória'],
     status: [(v: string) => !!v || 'Status é obrigatório'],
   };
-
-  function restFormProcess() {
-    formProcess.title = '';
-    formProcess.processNumber = '';
-    formProcess.description = '';
-    formProcess.status = ProcessStatus.OPEN;
-  }
 
   async function createProcess() {
     loading.value = true;
@@ -93,7 +98,6 @@ export function useProcessForm() {
   return {
     formProcess,
     rulesProcess,
-    restFormProcess,
     createProcess,
     resetFormProcess,
     updateProcess,

@@ -35,5 +35,5 @@ export const ProcessStatusLabel: Record<ProcessStatus, string> = {
 };
 
 export function getProcessStatusLabel(status: string): string {
-  return ProcessStatusLabel[status as ProcessStatus] ?? 'status desconhecido';
+  return ProcessStatusLabel[status as ProcessStatus] ?? 'Status desconhecido';
 }

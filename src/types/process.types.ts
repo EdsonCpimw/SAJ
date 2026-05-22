@@ -1,5 +1,7 @@
 import type { UUID } from 'crypto';
 import type { ProcessStatus } from './enum/process-status.enum';
+import type { ProcessPriority } from './enum/process-priority.enum';
+import type { ProcessLegalArea } from './enum/process-legal-area.enum';
 
 export interface IProcess {
   id?: UUID;
@@ -10,9 +12,15 @@ export interface IProcess {
 
   title: string;
   processNumber: string;
+  cnpj: string;
   description: string;
   status: ProcessStatus;
   createdAt?: string;
+
+  legalArea: ProcessLegalArea;
+  courtDivision: string;
+  court: string;
+  priority: ProcessPriority;
 }
 
 export interface IProcessCreate {
@@ -20,4 +28,9 @@ export interface IProcessCreate {
   processNumber: string;
   description: string;
   status: ProcessStatus;
+  cnpj: string;
+  legalArea: ProcessLegalArea;
+  courtDivision: string;
+  court: string;
+  priority: ProcessPriority;
 }

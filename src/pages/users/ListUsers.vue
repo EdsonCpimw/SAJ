@@ -1,8 +1,66 @@
 <template>
   <div class="q-pa-md">
+    <div class="row q-mt-md">
+      <div class="col-12">
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">Pequisar</div>
+            <div class="text-caption text-grey-5">
+              Preencha o campo para filtrar os dados da tabela
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <div class="row q-col-gutter-md">
+              <div class="col-12 col-md-4">
+                <SearchInput
+                  v-model="search"
+                  placeholder="Buscar por Nome, Email, Telefone"
+                  :debounce="400"
+                />
+              </div>
+              <!-- FILTRO POR STATUS -->
+              <div class="col-12 col-md-4">
+                <q-select
+                  v-model="filterActive"
+                  outlined
+                  dense
+                  clearable
+                  label="Status"
+                  :options="UserStatusOptions"
+                  emit-value
+                  map-options
+                >
+                  <template #prepend>
+                    <q-icon name="filter_list" />
+                  </template>
+                  <!-- OPÇÕES -->
+                  <template #option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section avatar>
+                        <q-badge
+                          rounded
+                          :color="scope.opt.value ? 'green' : 'red'"
+                          style="width: 12px; height: 12px"
+                        />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-pa-md">
     <q-table
       title="Lista de usuários"
-      :rows="rows"
+      :rows="filteredRows"
       :columns="columns"
       row-key="id"
       :pagination="{ rowsPerPage: 10 }"
@@ -57,9 +115,27 @@
 import { useQuasar, type QTableColumn } from 'quasar';
 import { useUsers } from 'src/composables/useUsers';
 import type { IUser } from 'src/types/user.types';
+import { computed, ref } from 'vue';
+import SearchInput from 'src/components/shared/SearchInput.vue';
+import { UserStatusOptions } from 'src/types/enum/user-status.enum';
 
 const { rows, inactiveUser } = useUsers();
 const $q = useQuasar();
+const search = ref('');
+const filterActive = ref<boolean | null>(null);
+
+const filteredRows = computed(() =>
+  rows.value.filter((row) => {
+    const matchSearch =
+      row.name.toLowerCase().includes(search.value.toLowerCase()) ||
+      row.email.toLowerCase().includes(search.value.toLowerCase()) ||
+      row.phone.includes(search.value);
+
+    const matchActive = filterActive.value === null || row.active === filterActive.value;
+
+    return matchSearch && matchActive;
+  }),
+);
 
 const columns: QTableColumn[] = [
   {
