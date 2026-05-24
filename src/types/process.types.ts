@@ -12,7 +12,7 @@ export interface IProcess {
 
   title: string;
   processNumber: string;
-  cnpj: string;
+  document: string;
   description: string;
   status: ProcessStatus;
   createdAt?: string;
@@ -28,7 +28,7 @@ export interface IProcessCreate {
   processNumber: string;
   description: string;
   status: ProcessStatus;
-  cnpj: string;
+  document: string;
   legalArea: ProcessLegalArea;
   courtDivision: string;
   court: string;

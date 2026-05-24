@@ -82,6 +82,34 @@
                   </template>
                 </q-select>
               </div>
+              <!-- FILTRO POR AREA JURÍDICA -->
+              <div class="col-12 col-md-4">
+                <q-select
+                  v-model="filterLegalArea"
+                  outlined
+                  dense
+                  clearable
+                  label="Área jurídica"
+                  :options="ProcessLegalAreaOptions"
+                  emit-value
+                  map-options
+                >
+                  <template #prepend>
+                    <q-icon name="filter_list" />
+                  </template>
+                  <!-- OPÇÕES -->
+                  <template #option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <!-- <q-item-section avatar>
+                        <q-badge rounded style="width: 12px; height: 12px" />
+                      </q-item-section> -->
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
             </div>
           </q-card-section>
         </q-card>
@@ -106,7 +134,7 @@
           @click="$router.push({ name: 'process-create' })"
         />
       </template>
-      <!-- COLUNA STATUS -->
+      <!-- COLUNA AREA JURÍDICA -->
       <template #body-cell-legalArea="props">
         <q-td :props="props">
           {{ getProcessLegalAreaLabel(props.row.legalArea) }}
@@ -150,7 +178,11 @@
 import { type QTableColumn } from 'quasar';
 import { computed, ref } from 'vue';
 import { useProcess } from 'src/composables/useProcess';
-import { getProcessLegalAreaLabel } from 'src/types/enum/process-legal-area.enum';
+import type { ProcessLegalArea } from 'src/types/enum/process-legal-area.enum';
+import {
+  getProcessLegalAreaLabel,
+  ProcessLegalAreaOptions,
+} from 'src/types/enum/process-legal-area.enum';
 import type { ProcessPriority } from 'src/types/enum/process-priority.enum';
 import {
   getProcessPriorityColor,
@@ -170,6 +202,7 @@ const { rows } = useProcess();
 const search = ref('');
 const filterStatus = ref<ProcessStatus | null>(null);
 const filterPriority = ref<ProcessPriority | null>(null);
+const filterLegalArea = ref<ProcessLegalArea | null>(null);
 
 const filteredRows = computed(() =>
   rows.value.filter((row) => {
@@ -177,12 +210,14 @@ const filteredRows = computed(() =>
       row.title.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()) ||
       row.court.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()) ||
       row.processNumber.includes(search.value) ||
-      row.cnpj.includes(search.value);
+      row.document.includes(search.value);
 
     const matchStatus = filterStatus.value === null || row.status === filterStatus.value;
     const matchPriority = filterPriority.value === null || row.priority === filterPriority.value;
+    const matchLegalArea =
+      filterLegalArea.value === null || row.legalArea === filterLegalArea.value;
 
-    return matchSearch && matchStatus && matchPriority;
+    return matchSearch && matchStatus && matchPriority && matchLegalArea;
   }),
 );
 
@@ -195,10 +230,10 @@ const columns: QTableColumn[] = [
     sortable: true,
   },
   {
-    name: 'cnpj',
+    name: 'document',
     align: 'left',
     label: 'CNPJ',
-    field: (row: { cnpj: string }) => row.cnpj,
+    field: (row: { document: string }) => row.document,
     sortable: true,
   },
   {

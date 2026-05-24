@@ -4,6 +4,9 @@ import { ProcessStatusOptions } from 'src/types/enum/process-status.enum';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { formatDocument } from 'src/utils/document.util';
+import { ProcessLegalAreaOptions } from 'src/types/enum/process-legal-area.enum';
+import { ProcessPriorityOptions } from 'src/types/enum/process-priority.enum';
 
 const isEditing = computed(() => !!route.params.id);
 const router = useRouter();
@@ -107,6 +110,20 @@ async function onSubmit() {
               </template>
             </q-input>
           </div>
+          <!-- DOCUMENTO -->
+          <div class="col-12 col-md-6">
+            <q-input
+              :model-value="formatDocument(formProcess.document)"
+              outlined
+              label="CPF / CNPJ"
+              :rules="rulesProcess.document"
+              @update:model-value="formProcess.document = String($event).replace(/\D/g, '')"
+            >
+              <template #prepend>
+                <q-icon name="badge" />
+              </template>
+            </q-input>
+          </div>
           <!-- DESCRIPTION -->
           <div class="col-12 col-md-6">
             <q-input
@@ -134,6 +151,61 @@ async function onSubmit() {
                 <q-icon name="info" />
               </template>
             </q-select>
+          </div>
+          <div class="col-12 col-md-6">
+            <q-select
+              v-model="formProcess.priority"
+              outlined
+              label="Prioridade"
+              :options="ProcessPriorityOptions"
+              emit-value
+              map-options
+            >
+              <template #prepend>
+                <q-icon name="info" />
+              </template>
+            </q-select>
+          </div>
+          <!-- AREA TRABALHISTA -->
+          <div class="col-12 col-md-6">
+            <q-select
+              v-model="formProcess.legalArea"
+              outlined
+              label="Área Trabalhista"
+              :options="ProcessLegalAreaOptions"
+              emit-value
+              map-options
+            >
+              <template #prepend>
+                <q-icon name="local_library" />
+              </template>
+            </q-select>
+          </div>
+          <!-- VARA -->
+          <div class="col-12 col-md-6">
+            <q-input
+              v-model="formProcess.courtDivision"
+              outlined
+              label="Vara"
+              :rules="rulesProcess.courtDivision"
+            >
+              <template #prepend>
+                <q-icon name="corporate_fare" />
+              </template>
+            </q-input>
+          </div>
+          <!-- TRIBUNAL -->
+          <div class="col-12 col-md-6">
+            <q-input
+              v-model="formProcess.court"
+              outlined
+              label="Tribunal"
+              :rules="rulesProcess.court"
+            >
+              <template #prepend>
+                <q-icon name=" account_balance" />
+              </template>
+            </q-input>
           </div>
         </q-form>
       </q-card-section>

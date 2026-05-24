@@ -5,6 +5,7 @@ import { reactive, ref } from 'vue';
 import axios from 'axios';
 import { ProcessPriority } from 'src/types/enum/process-priority.enum';
 import { ProcessLegalArea } from 'src/types/enum/process-legal-area.enum';
+import { isValidDocument } from 'src/utils/document.util';
 
 export function useProcessForm() {
   const loading = ref(false);
@@ -14,7 +15,7 @@ export function useProcessForm() {
   const formProcess = reactive<IProcess>({
     title: '',
     processNumber: '',
-    cnpj: '',
+    document: '',
     description: '',
     legalArea: ProcessLegalArea.ADMINISTRATIVE,
     courtDivision: '',
@@ -28,7 +29,7 @@ export function useProcessForm() {
     formProcess.title = '';
     formProcess.description = '';
     formProcess.status = ProcessStatus.OPEN;
-    formProcess.cnpj = '';
+    formProcess.document = '';
     formProcess.legalArea = ProcessLegalArea.ADMINISTRATIVE;
     formProcess.courtDivision = '';
     formProcess.court = '';
@@ -37,9 +38,16 @@ export function useProcessForm() {
 
   const rulesProcess = {
     title: [(v: string) => !!v || 'Título é obrigatório'],
+    document: [
+      (v: string) => !!v || 'CPF ou CNPJ é obrigatório',
+      (v: string) => isValidDocument(v) || 'CPF ou CNPJ inválido',
+    ],
     processNumber: [(v: string) => !!v || 'Número do processo é obrigatório'],
     description: [(v: string) => !!v || 'Descrição é obrigatória'],
     status: [(v: string) => !!v || 'Status é obrigatório'],
+    legalArea: [(v: string) => !!v || 'Área trabalhista é obrigatório'],
+    courtDivision: [(v: string) => !!v || 'Vara é obrigatório'],
+    court: [(v: string) => !!v || 'Tribunal é obrigatório'],
   };
 
   async function createProcess() {
@@ -77,6 +85,11 @@ export function useProcessForm() {
     formProcess.processNumber = process.processNumber;
     formProcess.description = process.description;
     formProcess.status = process.status;
+    formProcess.document = process.document;
+    formProcess.legalArea = process.legalArea;
+    formProcess.court = process.court;
+    formProcess.courtDivision = process.courtDivision;
+    formProcess.priority = process.priority;
   }
 
   async function updateProcess(id: string) {

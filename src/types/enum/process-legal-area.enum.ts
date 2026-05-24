@@ -35,5 +35,5 @@ export const ProcessLegalAreaLabel: Record<ProcessLegalArea, string> = {
 };
 
 export function getProcessLegalAreaLabel(legalArea: string): string {
-  return ProcessLegalAreaLabel[legalArea as ProcessLegalArea] ?? 'Prioridade desconhecida';
+  return ProcessLegalAreaLabel[legalArea as ProcessLegalArea] ?? 'Área jurídica desconhecida';
 }
