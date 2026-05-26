@@ -1,10 +1,10 @@
 import { ProcessService } from 'src/services/process.service';
-import { ProcessStatus } from 'src/types/enum/process-status.enum';
+import { ProcessStatus } from 'src/types/enum/process/process-status.enum';
 import type { IProcess } from 'src/types/process.types';
 import { reactive, ref } from 'vue';
 import axios from 'axios';
-import { ProcessPriority } from 'src/types/enum/process-priority.enum';
-import { ProcessLegalArea } from 'src/types/enum/process-legal-area.enum';
+import { ProcessPriority } from 'src/types/enum/process/process-priority.enum';
+import { ProcessLegalArea } from 'src/types/enum/process/process-legal-area.enum';
 import { isValidDocument } from 'src/utils/document.util';
 
 export function useProcessForm() {

@@ -160,10 +160,23 @@
       <!-- COLUNA AÇÕES -->
       <template #body-cell-actions="props">
         <q-td :props="props">
+          <q-btn flat round color="positive" icon="timeline" @click="openTimeline(props.row)">
+            <q-tooltip>Histórico de movimentações</q-tooltip>
+          </q-btn>
           <q-btn
             flat
             round
-            color="orange"
+            color="primary"
+            icon="playlist_add"
+            @click="$router.push({ name: 'process-movement', params: { id: props.row.id } })"
+          >
+            <q-tooltip>Adicionar movimentação</q-tooltip>
+          </q-btn>
+
+          <q-btn
+            flat
+            round
+            color="warning"
             icon="edit"
             @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
           >
@@ -175,30 +188,34 @@
   </div>
 </template>
 <script setup lang="ts">
-import { type QTableColumn } from 'quasar';
+import { useQuasar, type QTableColumn } from 'quasar';
 import { computed, ref } from 'vue';
-import { useProcess } from 'src/composables/useProcess';
-import type { ProcessLegalArea } from 'src/types/enum/process-legal-area.enum';
+import { useProcess } from '../../composables/process/useProcess';
+import { useProcessMoviment } from '../../composables/movements/useProcessMoviment';
+import type { ProcessLegalArea } from '../../types/enum/process/process-legal-area.enum';
 import {
   getProcessLegalAreaLabel,
   ProcessLegalAreaOptions,
-} from 'src/types/enum/process-legal-area.enum';
-import type { ProcessPriority } from 'src/types/enum/process-priority.enum';
+} from '../../types/enum/process/process-legal-area.enum';
+import type { ProcessPriority } from '../../types/enum/process/process-priority.enum';
 import {
   getProcessPriorityColor,
   getProcessPriorityLabel,
   ProcessPriorityOptions,
-} from 'src/types/enum/process-priority.enum';
-import type { ProcessStatus } from 'src/types/enum/process-status.enum';
+} from '../../types/enum/process/process-priority.enum';
+import type { ProcessStatus } from '../../types/enum/process/process-status.enum';
 import {
   getProcessStatusColor,
   getProcessStatusLabel,
   ProcessStatusOptions,
-} from 'src/types/enum/process-status.enum';
+} from '../../types/enum/process/process-status.enum';
 import type { IProcess } from 'src/types/process.types';
 import SearchInput from 'src/components/shared/SearchInput.vue';
+import ProcessTimelineDialog from 'src/components/process/ProcessTimelineDialog.vue';
 
+const $q = useQuasar();
 const { rows } = useProcess();
+const { findProcessMovimentsById } = useProcessMoviment();
 const search = ref('');
 const filterStatus = ref<ProcessStatus | null>(null);
 const filterPriority = ref<ProcessPriority | null>(null);
@@ -220,6 +237,16 @@ const filteredRows = computed(() =>
     return matchSearch && matchStatus && matchPriority && matchLegalArea;
   }),
 );
+
+async function openTimeline(process: IProcess) {
+  const rowsMoviments = await findProcessMovimentsById(process.id!);
+  $q.dialog({
+    component: ProcessTimelineDialog,
+    componentProps: {
+      movements: rowsMoviments,
+    },
+  });
+}
 
 const columns: QTableColumn[] = [
   {

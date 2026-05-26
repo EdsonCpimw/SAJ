@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useProcessForm } from 'src/composables/useProcessForm';
-import { ProcessStatusOptions } from 'src/types/enum/process-status.enum';
+import { useProcessForm } from '../../composables/process/useProcessForm';
+import { ProcessStatusOptions } from '../../types/enum/process/process-status.enum';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { formatDocument } from 'src/utils/document.util';
-import { ProcessLegalAreaOptions } from 'src/types/enum/process-legal-area.enum';
-import { ProcessPriorityOptions } from 'src/types/enum/process-priority.enum';
+import { ProcessLegalAreaOptions } from '../../types/enum/process/process-legal-area.enum';
+import { ProcessPriorityOptions } from '../../types/enum/process/process-priority.enum';
 
 const isEditing = computed(() => !!route.params.id);
 const router = useRouter();

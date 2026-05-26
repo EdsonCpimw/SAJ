@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useUserForm } from 'src/composables/useUserForm';
+import { useUserForm } from '../../composables/users/useUserForm';
 import { UserService } from 'src/services/user.service';
 
 const router = useRouter();

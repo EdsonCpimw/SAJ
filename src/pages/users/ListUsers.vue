@@ -113,11 +113,11 @@
 </template>
 <script setup lang="ts">
 import { useQuasar, type QTableColumn } from 'quasar';
-import { useUsers } from 'src/composables/useUsers';
+import { useUsers } from '../../composables/users/useUsers';
 import type { IUser } from 'src/types/user.types';
 import { computed, ref } from 'vue';
 import SearchInput from 'src/components/shared/SearchInput.vue';
-import { UserStatusOptions } from 'src/types/enum/user-status.enum';
+import { UserStatusOptions } from '../../types/enum/users/user-status.enum';
 
 const { rows, inactiveUser } = useUsers();
 const $q = useQuasar();

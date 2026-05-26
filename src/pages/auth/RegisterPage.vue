@@ -150,7 +150,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useUserForm } from 'src/composables/useUserForm';
+import { useUserForm } from '../../composables/users/useUserForm';
 import { ref, toRaw } from 'vue';
 import { useAuthStore } from 'src/stores/auth.store';
 
