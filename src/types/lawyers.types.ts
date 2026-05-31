@@ -1,4 +1,4 @@
-import type { IUser } from 'src/types/user.types';
+import type { IUser } from 'src/types/user/user.types';
 
 export interface ILawyer {
   id?: number;
@@ -7,6 +7,6 @@ export interface ILawyer {
   specialty: string;
 }
 
-export interface ILawyerFull extends IUser{
+export interface ILawyerFull extends IUser {
   lawyer: ILawyer;
 }

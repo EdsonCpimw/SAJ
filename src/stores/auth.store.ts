@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { UserService } from 'src/services/user.service';
 import type { ICompanyCreate } from 'src/types/company.types';
-import type { IUser } from 'src/types/user.types';
+import type { IUser } from 'src/types/user/user.types';
 import { ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {

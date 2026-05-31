@@ -1,7 +1,7 @@
-import type { IUserCreate } from 'src/types/user.types';
+import type { IUserCreate } from 'src/types/user/user.types';
 import type { UUID } from 'crypto';
 
-export interface ICompany{
+export interface ICompany {
   id?: UUID;
   name: string;
   document: string;

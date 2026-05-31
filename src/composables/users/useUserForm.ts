@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue';
-import type { IUser, IUserCreate } from 'src/types/user.types';
+import type { IUser, IUserCreate } from 'src/types/user/user.types';
 import axios from 'axios';
 import { UserService } from 'src/services/user.service';
 
