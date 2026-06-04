@@ -60,11 +60,14 @@
   <div class="q-pa-md">
     <q-table
       title="Lista de usuários"
-      :rows="filteredRows"
+      :rows="rows"
       :columns="columns"
       row-key="id"
-      :pagination="{ rowsPerPage: 10 }"
+      :loading="loading"
+      v-model:pagination="pagination"
+      :rows-per-page-options="[5, 7, 10, 25, 50]"
       rows-per-page-label="Registros por página:"
+      @request="onRequest"
     >
       <!-- BOTÃO NOVO USUÁRIO -->
       <template #top-right>
@@ -108,36 +111,82 @@
           </q-btn>
         </q-td>
       </template>
+      <template #no-data>
+        <div class="full-width column flex-center q-pa-lg text-grey-6">
+          <q-icon name="folder_open" size="4rem" class="q-mb-md" />
+          <div class="text-h6">Nenhum usuário encontrado</div>
+          <div class="text-caption">Adicione um novo usuário para começar</div>
+        </div>
+      </template>
     </q-table>
   </div>
 </template>
 <script setup lang="ts">
 import { useQuasar, type QTableColumn } from 'quasar';
 import { useUsers } from '../../composables/users/useUsers';
-import type { IUser } from 'src/types/user.types';
-import { computed, ref } from 'vue';
+import type { IUser } from 'src/types/user/user.types';
+import { onMounted, ref, watch } from 'vue';
 import SearchInput from 'src/components/shared/SearchInput.vue';
 import { UserStatusOptions } from '../../types/enum/users/user-status.enum';
+import { watchDebounced } from '@vueuse/core';
 
-const { rows, inactiveUser } = useUsers();
+const { rows, pagination, loading, toggleUser, findAllUsers } = useUsers();
 const $q = useQuasar();
 const search = ref('');
 const filterActive = ref<boolean | null>(null);
 
-const filteredRows = computed(() =>
-  rows.value.filter((row) => {
-    const matchSearch =
-      row.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      row.email.toLowerCase().includes(search.value.toLowerCase()) ||
-      row.phone.includes(search.value);
-
-    const matchActive = filterActive.value === null || row.active === filterActive.value;
-
-    return matchSearch && matchActive;
-  }),
+watchDebounced(
+  search,
+  async () => {
+    pagination.value.page = 1;
+    await findAllUsers({
+      search: search.value || undefined,
+      active: filterActive.value ?? undefined,
+    });
+  },
+  { debounce: 400 },
 );
 
+watch(filterActive, async () => {
+  pagination.value.page = 1;
+  await findAllUsers({
+    search: search.value || undefined,
+    active: filterActive.value ?? undefined,
+  });
+});
+
+async function onRequest(props: {
+  pagination: {
+    page: number;
+    rowsPerPage: number;
+    rowsNumber?: number;
+    sortBy: string;
+    descending: boolean;
+  };
+}) {
+  pagination.value = {
+    ...props.pagination,
+    rowsNumber: props.pagination.rowsNumber ?? pagination.value.rowsNumber,
+  };
+  await findAllUsers({
+    search: search.value || undefined,
+    active: filterActive.value ?? undefined,
+  });
+}
+
+onMounted(async () => {
+  await findAllUsers();
+});
+
 const columns: QTableColumn[] = [
+  {
+    name: 'companyName',
+    required: true,
+    label: 'Nome do Escritório',
+    align: 'left',
+    field: (row: { companyName: string }) => row.companyName,
+    sortable: true,
+  },
   {
     name: 'name',
     required: true,
@@ -187,7 +236,7 @@ function confirmToggleUser(user: IUser) {
     },
     persistent: true,
   }).onOk(() => {
-    void inactiveUser(user.id!);
+    void toggleUser(user.id!);
   });
 }
 </script>

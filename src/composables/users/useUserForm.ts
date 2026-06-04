@@ -88,6 +88,9 @@ export function useUserForm() {
       } else {
         error.value = 'Erro inesperado';
       }
+      throw erro;
+    } finally {
+      loading.value = false;
     }
   }
 

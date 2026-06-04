@@ -99,6 +99,38 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  /*
+   * ROTAS DE MOVIMENTAÇÃO DE PROCESSOS
+   */
+  {
+    path: '/process/movements',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'process-movement-list',
+        component: () => import('pages/process/ProcessMovement.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Movimentação de processos', icon: 'folder_open' },
+          ],
+        },
+      },
+      {
+        path: 'create',
+        name: 'process-movement-create',
+        component: () => import('pages/process/ProcessMovementForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'folder_open', to: { name: 'process' } },
+            { label: 'Cadastro de movimentação de processos', icon: 'gavel' },
+          ],
+        },
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it

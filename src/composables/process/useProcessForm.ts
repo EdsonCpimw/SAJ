@@ -5,7 +5,6 @@ import { reactive, ref } from 'vue';
 import axios from 'axios';
 import { ProcessPriority } from 'src/types/enum/process/process-priority.enum';
 import { ProcessLegalArea } from 'src/types/enum/process/process-legal-area.enum';
-import { isValidDocument } from 'src/utils/document.util';
 
 export function useProcessForm() {
   const loading = ref(false);
@@ -14,8 +13,7 @@ export function useProcessForm() {
 
   const formProcess = reactive<IProcess>({
     title: '',
-    processNumber: '',
-    document: '',
+    numberProcess: '',
     description: '',
     legalArea: ProcessLegalArea.ADMINISTRATIVE,
     courtDivision: '',
@@ -25,11 +23,10 @@ export function useProcessForm() {
   });
 
   function resetFormProcess() {
-    formProcess.processNumber = '';
+    formProcess.numberProcess = '';
     formProcess.title = '';
     formProcess.description = '';
     formProcess.status = ProcessStatus.OPEN;
-    formProcess.document = '';
     formProcess.legalArea = ProcessLegalArea.ADMINISTRATIVE;
     formProcess.courtDivision = '';
     formProcess.court = '';
@@ -38,11 +35,7 @@ export function useProcessForm() {
 
   const rulesProcess = {
     title: [(v: string) => !!v || 'Título é obrigatório'],
-    document: [
-      (v: string) => !!v || 'CPF ou CNPJ é obrigatório',
-      (v: string) => isValidDocument(v) || 'CPF ou CNPJ inválido',
-    ],
-    processNumber: [(v: string) => !!v || 'Número do processo é obrigatório'],
+    numberProcess: [(v: string) => !!v || 'Número do processo é obrigatório'],
     description: [(v: string) => !!v || 'Descrição é obrigatória'],
     status: [(v: string) => !!v || 'Status é obrigatório'],
     legalArea: [(v: string) => !!v || 'Área trabalhista é obrigatório'],
@@ -63,6 +56,9 @@ export function useProcessForm() {
       } else {
         error.value = 'Erro inesperado';
       }
+      throw erro;
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -82,10 +78,9 @@ export function useProcessForm() {
 
   function fillFormProcess(process: IProcess) {
     formProcess.title = process.title;
-    formProcess.processNumber = process.processNumber;
+    formProcess.numberProcess = process.numberProcess;
     formProcess.description = process.description;
     formProcess.status = process.status;
-    formProcess.document = process.document;
     formProcess.legalArea = process.legalArea;
     formProcess.court = process.court;
     formProcess.courtDivision = process.courtDivision;

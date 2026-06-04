@@ -4,7 +4,6 @@ import { ProcessStatusOptions } from '../../types/enum/process/process-status.en
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { formatDocument } from 'src/utils/document.util';
 import { ProcessLegalAreaOptions } from '../../types/enum/process/process-legal-area.enum';
 import { ProcessPriorityOptions } from '../../types/enum/process/process-priority.enum';
 
@@ -87,10 +86,10 @@ async function onSubmit() {
           <!-- NUMERO DO PROCESSO -->
           <div class="col-12 col-md-6">
             <q-input
-              v-model="formProcess.processNumber"
+              v-model="formProcess.numberProcess"
               outlined
               label="Numero do Processo"
-              :rules="rulesProcess.processNumber"
+              :rules="rulesProcess.numberProcess"
             >
               <template #prepend>
                 <q-icon name="gavel" />
@@ -110,26 +109,12 @@ async function onSubmit() {
               </template>
             </q-input>
           </div>
-          <!-- DOCUMENTO -->
-          <div class="col-12 col-md-6">
-            <q-input
-              :model-value="formatDocument(formProcess.document)"
-              outlined
-              label="CPF / CNPJ"
-              :rules="rulesProcess.document"
-              @update:model-value="formProcess.document = String($event).replace(/\D/g, '')"
-            >
-              <template #prepend>
-                <q-icon name="badge" />
-              </template>
-            </q-input>
-          </div>
           <!-- DESCRIPTION -->
           <div class="col-12 col-md-6">
             <q-input
               v-model="formProcess.description"
               outlined
-              label="Description"
+              label="Descrição"
               :rules="rulesProcess.description"
             >
               <template #prepend>

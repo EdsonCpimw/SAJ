@@ -90,7 +90,18 @@ const linksList: EssentialLinkProps[] = [
     title: 'Processos',
     caption: 'Gerenciar Processos',
     icon: 'balance',
-    link: '/process',
+    children: [
+      {
+        title: 'Lista de Processos',
+        icon: 'folder_open',
+        link: '/process',
+      },
+      {
+        title: 'Movimentações de Processos',
+        icon: 'timeline',
+        link: '/process/movements',
+      },
+    ],
   },
 ];
 

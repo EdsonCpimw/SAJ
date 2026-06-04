@@ -17,7 +17,7 @@ const { dialogRef, onDialogHide } = useDialogPluginComponent();
     <q-card style="width: 600px; max-width: 90vw">
       <q-card-section class="row items-center">
         <q-icon name="timeline" color="teal" size="sm" class="q-mr-sm" />
-        <div class="text-h6">Histórico de Movimentações</div>
+        <div class="text-h6">Histórico de Movimentações do processo</div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>

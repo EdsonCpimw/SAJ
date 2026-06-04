@@ -64,6 +64,64 @@ export enum ProcessMovementType {
   REACTIVATED = 'REACTIVATED',
 }
 
+export const ProcessMovementOptions = [
+  // Cadastro
+  { label: 'Processo cadastrado', value: ProcessMovementType.CASE_CREATED },
+  { label: 'Distribuição', value: ProcessMovementType.DISTRIBUTION },
+  { label: 'Redistribuição', value: ProcessMovementType.REDISTRIBUTION },
+  { label: 'Remetido', value: ProcessMovementType.TRANSFERRED },
+  // Petições
+  { label: 'Petição inicial', value: ProcessMovementType.INITIAL_PETITION },
+  { label: 'Petição intermediária', value: ProcessMovementType.INTERMEDIATE_PETITION },
+  { label: 'Contestação', value: ProcessMovementType.CONTESTATION },
+  { label: 'Recurso', value: ProcessMovementType.APPEAL },
+  { label: 'Contrarrazões', value: ProcessMovementType.COUNTER_ARGUMENTS },
+  { label: 'Anexo', value: ProcessMovementType.ATTACHMENT },
+  { label: 'Manifestação', value: ProcessMovementType.MANIFESTATION },
+  // Decisões
+  { label: 'Despacho', value: ProcessMovementType.DISPATCH },
+  { label: 'Decisão interlocutória', value: ProcessMovementType.INTERLOCUTORY_DECISION },
+  { label: 'Sentença', value: ProcessMovementType.SENTENCE },
+  { label: 'Acórdão', value: ProcessMovementType.COLLEGIATE_DECISION },
+  { label: 'Decisão monocrática', value: ProcessMovementType.SINGLE_JUDGE_DECISION },
+  // Audiências
+  { label: 'Audiência de conciliação', value: ProcessMovementType.CONCILIATION_HEARING },
+  { label: 'Audiência de instrução', value: ProcessMovementType.INSTRUCTION_HEARING },
+  { label: 'Audiência realizada', value: ProcessMovementType.HEARING_HELD },
+  { label: 'Audiência cancelada', value: ProcessMovementType.HEARING_CANCELLED },
+  { label: 'Audiência redesignada', value: ProcessMovementType.HEARING_RESCHEDULED },
+  // Prazos
+  { label: 'Intimação', value: ProcessMovementType.SUMMONS },
+  { label: 'Citação', value: ProcessMovementType.SUBPOENA },
+  { label: 'Prazo aberto', value: ProcessMovementType.DEADLINE_OPENED },
+  { label: 'Prazo encerrado', value: ProcessMovementType.DEADLINE_CLOSED },
+  { label: 'Prazo suspenso', value: ProcessMovementType.DEADLINE_SUSPENDED },
+  // Tribunal
+  { label: 'Concluso', value: ProcessMovementType.SUBMITTED_TO_JUDGE },
+  { label: 'Vista ao MP', value: ProcessMovementType.REFERRED_TO_DA },
+  { label: 'Vista ao perito', value: ProcessMovementType.REFERRED_TO_EXPERT },
+  { label: 'Perícia', value: ProcessMovementType.EXPERT_EXAMINATION },
+  { label: 'Diligência', value: ProcessMovementType.DUE_DILIGENCE },
+  // Execução
+  { label: 'Execução iniciada', value: ProcessMovementType.ENFORCEMENT_STARTED },
+  { label: 'Penhora', value: ProcessMovementType.ASSET_SEIZURE },
+  { label: 'Hasta pública', value: ProcessMovementType.PUBLIC_AUCTION },
+  { label: 'Pagamento', value: ProcessMovementType.PAYMENT },
+  { label: 'Execução extinta', value: ProcessMovementType.ENFORCEMENT_DISMISSED },
+  // Encerramento
+  { label: 'Arquivado', value: ProcessMovementType.ARCHIVED },
+  { label: 'Extinto sem resolução', value: ProcessMovementType.DISMISSED_WITHOUT_MERIT },
+  { label: 'Extinto com resolução', value: ProcessMovementType.DISMISSED_WITH_MERIT },
+  { label: 'Acordo', value: ProcessMovementType.SETTLEMENT },
+  { label: 'Desistência', value: ProcessMovementType.WITHDRAWAL },
+  { label: 'Trânsito em julgado', value: ProcessMovementType.FINAL_JUDGMENT },
+  // Outros
+  { label: 'Comentário', value: ProcessMovementType.COMMENT },
+  { label: 'Cliente visualizou', value: ProcessMovementType.CLIENT_VIEWED },
+  { label: 'Suspenso', value: ProcessMovementType.SUSPENDED },
+  { label: 'Reativado', value: ProcessMovementType.REACTIVATED },
+];
+
 export const ProcessMovementTypeLabel: Record<ProcessMovementType, string> = {
   // Cadastro
   [ProcessMovementType.CASE_CREATED]: 'Processo cadastrado',

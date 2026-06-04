@@ -14,7 +14,7 @@
               <div class="col-12 col-md-4">
                 <SearchInput
                   v-model="search"
-                  placeholder="Buscar por Numero do Processo, CNPJ, Título, Vara"
+                  placeholder="Buscar por Numero do Processo, Título, Vara"
                   :debounce="400"
                 />
               </div>
@@ -119,11 +119,14 @@
   <div class="q-pa-md">
     <q-table
       title="Lista de Processos"
-      :rows="filteredRows"
+      :rows="rows"
       :columns="columns"
       row-key="id"
-      :pagination="{ rowsPerPage: 10 }"
+      :loading="loading"
+      v-model:pagination="pagination"
+      :rows-per-page-options="[5, 7, 10, 25, 50]"
       rows-per-page-label="Registros por página:"
+      @request="onRequest"
     >
       <!-- BOTÃO NOVO PROCESSO -->
       <template #top-right>
@@ -168,7 +171,7 @@
             round
             color="primary"
             icon="playlist_add"
-            @click="$router.push({ name: 'process-movement', params: { id: props.row.id } })"
+            @click="openMovementDialog(props.row)"
           >
             <q-tooltip>Adicionar movimentação</q-tooltip>
           </q-btn>
@@ -180,16 +183,23 @@
             icon="edit"
             @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
           >
-            <q-tooltip>Editar</q-tooltip>
+            <q-tooltip>Editar Processo</q-tooltip>
           </q-btn>
         </q-td>
+      </template>
+      <template #no-data>
+        <div class="full-width column flex-center q-pa-lg text-grey-6">
+          <q-icon name="folder_open" size="4rem" class="q-mb-md" />
+          <div class="text-h6">Nenhum processo encontrado</div>
+          <div class="text-caption">Adicione um novo processo para começar</div>
+        </div>
       </template>
     </q-table>
   </div>
 </template>
 <script setup lang="ts">
 import { useQuasar, type QTableColumn } from 'quasar';
-import { computed, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useProcess } from '../../composables/process/useProcess';
 import { useProcessMoviment } from '../../composables/movements/useProcessMoviment';
 import type { ProcessLegalArea } from '../../types/enum/process/process-legal-area.enum';
@@ -212,55 +222,106 @@ import {
 import type { IProcess } from 'src/types/process.types';
 import SearchInput from 'src/components/shared/SearchInput.vue';
 import ProcessTimelineDialog from 'src/components/process/ProcessTimelineDialog.vue';
+import { watchDebounced } from '@vueuse/core';
+import ProcessCreateMovementDialog from 'src/components/process/ProcessCreateMovementDialog.vue';
+import axios from 'axios';
 
 const $q = useQuasar();
-const { rows } = useProcess();
+const { rows, pagination, loading, findAllProcess } = useProcess();
 const { findProcessMovimentsById } = useProcessMoviment();
 const search = ref('');
 const filterStatus = ref<ProcessStatus | null>(null);
 const filterPriority = ref<ProcessPriority | null>(null);
 const filterLegalArea = ref<ProcessLegalArea | null>(null);
 
-const filteredRows = computed(() =>
-  rows.value.filter((row) => {
-    const matchSearch =
-      row.title.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()) ||
-      row.court.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()) ||
-      row.processNumber.includes(search.value) ||
-      row.document.includes(search.value);
+async function openTimeline(process: IProcess) {
+  try {
+    const rowsMoviments = await findProcessMovimentsById(process.id!);
+    $q.dialog({
+      component: ProcessTimelineDialog,
+      componentProps: {
+        movements: rowsMoviments,
+      },
+    });
+  } catch (erro) {
+    if (axios.isAxiosError(erro) && erro.response?.status === 404) {
+      $q.notify({
+        type: 'warning',
+        message: 'Nenhuma movimentação encontrada para este processo',
+        position: 'top',
+      });
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: 'Erro ao buscar movimentações',
+        position: 'top',
+      });
+    }
+  }
+}
 
-    const matchStatus = filterStatus.value === null || row.status === filterStatus.value;
-    const matchPriority = filterPriority.value === null || row.priority === filterPriority.value;
-    const matchLegalArea =
-      filterLegalArea.value === null || row.legalArea === filterLegalArea.value;
+function openMovementDialog(process: IProcess) {
+  $q.dialog({
+    component: ProcessCreateMovementDialog,
+    componentProps: {
+      processId: process.id,
+      processTitle: process.title,
+    },
+  });
+}
 
-    return matchSearch && matchStatus && matchPriority && matchLegalArea;
-  }),
+watchDebounced(
+  search,
+  async (newValue) => {
+    console.log('search mudou:', newValue);
+    pagination.value.page = 1;
+    await findAllProcess({
+      search: search.value || undefined,
+      status: filterStatus.value ?? undefined,
+      priority: filterPriority.value ?? undefined,
+      legalArea: filterLegalArea.value ?? undefined,
+    });
+  },
+  { debounce: 400 },
 );
 
-async function openTimeline(process: IProcess) {
-  const rowsMoviments = await findProcessMovimentsById(process.id!);
-  $q.dialog({
-    component: ProcessTimelineDialog,
-    componentProps: {
-      movements: rowsMoviments,
-    },
+watch([filterStatus, filterPriority, filterLegalArea], async () => {
+  pagination.value.page = 1;
+  await findAllProcess({
+    search: search.value || undefined,
+    status: filterStatus.value ?? undefined,
+    priority: filterPriority.value ?? undefined,
+    legalArea: filterLegalArea.value ?? undefined,
+  });
+});
+
+async function onRequest(props: {
+  pagination: {
+    page: number;
+    rowsPerPage: number;
+    rowsNumber?: number;
+    sortBy: string;
+    descending: boolean;
+  };
+}) {
+  pagination.value = {
+    ...props.pagination,
+    rowsNumber: props.pagination.rowsNumber ?? pagination.value.rowsNumber,
+  };
+  await findAllProcess({
+    search: search.value || undefined,
+    status: filterStatus.value ?? undefined,
+    priority: filterPriority.value ?? undefined,
+    legalArea: filterLegalArea.value ?? undefined,
   });
 }
 
 const columns: QTableColumn[] = [
   {
-    name: 'processNumber',
+    name: 'numberProcess',
     align: 'left',
     label: 'Número do processo',
-    field: (row: { processNumber: string }) => row.processNumber,
-    sortable: true,
-  },
-  {
-    name: 'document',
-    align: 'left',
-    label: 'CNPJ',
-    field: (row: { document: string }) => row.document,
+    field: (row: { numberProcess: string }) => row.numberProcess,
     sortable: true,
   },
   {
