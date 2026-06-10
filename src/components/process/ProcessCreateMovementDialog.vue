@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useDialogPluginComponent, useQuasar } from 'quasar';
 import { ProcessMovementOptions } from 'src/types/enum/movements/processMovementType.enum';
 import { useProcessMovementForm } from 'src/composables/movements/useProcessMovementForm';
+import { ProcessStatusOptions } from 'src/types/enum/process/process-status.enum';
 
 const props = defineProps<{
   processId: string;
@@ -24,12 +25,12 @@ async function onSubmit() {
   const valid = await formRef.value.validate();
   error.value = null;
   if (!valid) return;
-  formProcessMovement.processId = props.processId;
   loading.value = true;
+  formProcessMovement.processId = props.processId;
   try {
     await createProcessMovement();
     $q.notify({ type: 'positive', message: 'Movimentação adicionada!', position: 'top' });
-    onDialogOK();
+    onDialogOK({ refresh: true });
   } catch {
     $q.notify({
       type: 'negative',
@@ -61,6 +62,15 @@ async function onSubmit() {
       <!-- FORMULÁRIO -->
       <q-card-section>
         <q-form ref="formRef" class="row q-col-gutter-md">
+          <!-- IMPORTANTE -->
+          <div class="col-12 col-md-6 flex items-center">
+            <q-toggle
+              v-model="formProcessMovement.isImportant"
+              label="Importante"
+              color="positive"
+              keep-color
+            />
+          </div>
           <!-- TIPO -->
           <div class="col-12">
             <q-select
@@ -77,7 +87,6 @@ async function onSubmit() {
               </template>
             </q-select>
           </div>
-
           <!-- TÍTULO -->
           <div class="col-12">
             <q-input
@@ -107,35 +116,56 @@ async function onSubmit() {
               </template>
             </q-input>
           </div>
-
-          <!-- DATA -->
+          <!-- DATA DA AUDIENCIA -->
           <div class="col-12 col-md-6">
-            <q-input v-model="formProcessMovement.createdAt" outlined label="Data">
+            <q-input
+              v-model="formProcessMovement.dateEvent"
+              outlined
+              label="Data e hora da audiência"
+              mask="##/##/#### ##:##"
+            >
               <template #prepend>
                 <q-icon name="event" />
               </template>
               <template #append>
                 <q-icon name="calendar_month" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="formProcessMovement.createdAt" mask="DD/MM/YYYY" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Fechar" color="primary" flat />
-                      </div>
-                    </q-date>
+                    <div class="row">
+                      <q-date
+                        v-model="formProcessMovement.dateEvent"
+                        mask="DD/MM/YYYY HH:mm"
+                        today-btn
+                      />
+                      <q-separator vertical />
+                      <q-time
+                        v-model="formProcessMovement.dateEvent"
+                        mask="DD/MM/YYYY HH:mm"
+                        format24h
+                      />
+                    </div>
+                    <div class="row items-center justify-end q-pa-sm">
+                      <q-btn v-close-popup label="Fechar" color="primary" flat />
+                    </div>
                   </q-popup-proxy>
                 </q-icon>
               </template>
             </q-input>
           </div>
-
-          <!-- VISÍVEL PARA O CLIENTE -->
-          <div class="col-12 col-md-6 flex items-center">
-            <q-toggle
-              v-model="formProcessMovement.visibleToClient"
-              label="Visível para o cliente"
-              color="primary"
-              keep-color
-            />
+          <!-- STATUS DO PROCESSO-->
+          <div class="col-12 col-md-6">
+            <q-select
+              v-model="formProcessMovement.status"
+              outlined
+              label="Status"
+              :options="ProcessStatusOptions"
+              emit-value
+              map-options
+              :rules="rulesProcessMovement.status"
+            >
+              <template #prepend>
+                <q-icon name="info" />
+              </template>
+            </q-select>
           </div>
         </q-form>
       </q-card-section>

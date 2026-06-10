@@ -31,7 +31,6 @@ export function useProcessMoviment() {
     error.value = null;
     try {
       rowsProcessMovements.value = await ProcessMovimentService.findAll();
-      console.log(rowsProcessMovements.value);
     } catch (erro) {
       error.value = 'Erro ao buscar as movimentações de processo';
       console.error(erro);

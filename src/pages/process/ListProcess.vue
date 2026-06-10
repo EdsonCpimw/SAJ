@@ -163,27 +163,74 @@
       <!-- COLUNA AÇÕES -->
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn flat round color="positive" icon="timeline" @click="openTimeline(props.row)">
-            <q-tooltip>Histórico de movimentações</q-tooltip>
-          </q-btn>
-          <q-btn
-            flat
-            round
-            color="primary"
-            icon="playlist_add"
-            @click="openMovementDialog(props.row)"
-          >
-            <q-tooltip>Adicionar movimentação</q-tooltip>
-          </q-btn>
+          <q-btn flat round icon="more_vert">
+            <q-menu>
+              <q-list style="min-width: 200px">
+                <q-item
+                  clickable
+                  v-close-popup
+                  v-if="props.row.hasMovements"
+                  @click="openTimeline(props.row)"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="timeline" color="positive" />
+                  </q-item-section>
+                  <q-item-section>Histórico de movimentações</q-item-section>
+                </q-item>
 
-          <q-btn
-            flat
-            round
-            color="warning"
-            icon="edit"
-            @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
-          >
-            <q-tooltip>Editar Processo</q-tooltip>
+                <q-item
+                  clickable
+                  v-close-popup
+                  v-if="props.row.hasMovements"
+                  @click="
+                    $router.push({
+                      name: ROUTE_NAMES.PROCESS_MOVEMENT_LIST,
+                      params: { processId: props.row.id },
+                    })
+                  "
+                >
+                  <q-item-section avatar>
+                    <q-icon name="list_alt" color="teal" />
+                  </q-item-section>
+                  <q-item-section>Gerenciar movimentações</q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-close-popup
+                  v-if="
+                    props.row.status != ProcessStatus.FINISHED &&
+                    props.row.status != ProcessStatus.CANCELLED
+                  "
+                  @click="openMovementDialog(props.row)"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="playlist_add" color="primary" />
+                  </q-item-section>
+                  <q-item-section>Adicionar movimentação</q-item-section>
+                </q-item>
+
+                <q-separator />
+
+                <q-item clickable v-close-popup @click="openProcessUpdateStatusDialog(props.row)">
+                  <q-item-section avatar>
+                    <q-icon name="update" color="teal" />
+                  </q-item-section>
+                  <q-item-section>Atualizar status do processo</q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="edit" color="warning" />
+                  </q-item-section>
+                  <q-item-section>Editar processo</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
           </q-btn>
         </q-td>
       </template>
@@ -213,10 +260,10 @@ import {
   getProcessPriorityLabel,
   ProcessPriorityOptions,
 } from '../../types/enum/process/process-priority.enum';
-import type { ProcessStatus } from '../../types/enum/process/process-status.enum';
 import {
   getProcessStatusColor,
   getProcessStatusLabel,
+  ProcessStatus,
   ProcessStatusOptions,
 } from '../../types/enum/process/process-status.enum';
 import type { IProcess } from 'src/types/process.types';
@@ -225,6 +272,8 @@ import ProcessTimelineDialog from 'src/components/process/ProcessTimelineDialog.
 import { watchDebounced } from '@vueuse/core';
 import ProcessCreateMovementDialog from 'src/components/process/ProcessCreateMovementDialog.vue';
 import axios from 'axios';
+import ProcessUpdateStatusDialog from 'src/components/process/ProcessUpdateStatusDialog.vue';
+import { ROUTE_NAMES } from 'src/constants/routes.constants';
 
 const $q = useQuasar();
 const { rows, pagination, loading, findAllProcess } = useProcess();
@@ -267,6 +316,25 @@ function openMovementDialog(process: IProcess) {
       processId: process.id,
       processTitle: process.title,
     },
+  }).onOk((data) => {
+    if (data?.refresh) {
+      void findAllProcess();
+    }
+  });
+}
+
+function openProcessUpdateStatusDialog(process: IProcess) {
+  $q.dialog({
+    component: ProcessUpdateStatusDialog,
+    componentProps: {
+      processId: process.id,
+      processTitle: process.title,
+      processStatus: process.status,
+    },
+  }).onOk((data) => {
+    if (data?.refresh) {
+      void findAllProcess();
+    }
   });
 }
 

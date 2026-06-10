@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> Sistema de Agendamento Jurídico </q-toolbar-title>
+        <q-toolbar-title> Sistema de Acompanhamento Jurídico </q-toolbar-title>
         <q-btn
           flat
           round
@@ -27,7 +27,9 @@
           </q-item-section>
           <q-item-section>
             <q-item-label class="text-weight-bold text-h6 text-primary">SAJ</q-item-label>
-            <q-item-label caption class="text-grey-6">Sistema de Agendamento Jurídico</q-item-label>
+            <q-item-label caption class="text-grey-6"
+              >Sistema de Acompanhamento Jurídico</q-item-label
+            >
           </q-item-section>
         </q-item>
 
@@ -96,11 +98,11 @@ const linksList: EssentialLinkProps[] = [
         icon: 'folder_open',
         link: '/process',
       },
-      {
-        title: 'Movimentações de Processos',
-        icon: 'timeline',
-        link: '/process/movements',
-      },
+      // {
+      //   title: 'Movimentações de Processos',
+      //   icon: 'timeline',
+      //   link: '/process/movements',
+      // },
     ],
   },
 ];

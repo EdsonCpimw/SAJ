@@ -1,5 +1,5 @@
 import type { UUID } from 'crypto';
-import type { IProcessSummary } from './process.types';
+import type { ProcessStatus } from './enum/process/process-status.enum';
 
 /*
  * TODO: O status tem que ser o do processo, movimentação não possui status
@@ -11,11 +11,11 @@ export interface IProcessMovement {
   type?: string;
   title: string;
   description: string;
-  visibleToClient: boolean;
   important: boolean;
-  eventDate: string;
+  dateEvent: string;
   createdAt: string;
-  process: IProcessSummary;
+  processNumber: string;
+  status: string;
 }
 
 export interface IProcessMovementCreate {
@@ -23,6 +23,25 @@ export interface IProcessMovementCreate {
   title: string;
   description: string;
   type: string;
-  visibleToClient: boolean;
-  createdAt: string;
+  dateEvent: string;
+  status: ProcessStatus.OPEN;
+  isImportant: boolean;
+}
+
+export interface IProcessMovementFormResponse {
+  id?: string;
+  title: string;
+  description: string;
+  type: string;
+  dateEvent: string;
+  status: ProcessStatus.OPEN;
+  isImportant: boolean;
+}
+
+export interface IProcessMovementUpdate {
+  processId: string;
+  title: string;
+  description: string;
+  type: string;
+  dateEvent: string;
 }

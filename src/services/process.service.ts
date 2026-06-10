@@ -1,6 +1,6 @@
 import { api } from 'src/boot/axios';
 import type { IPageResponse } from 'src/types/pagination.types';
-import type { IProcess, IProcessCreate } from 'src/types/process.types';
+import type { IProcess, IProcessCreate, IProcessStatus } from 'src/types/process.types';
 import type { IProcessFilters } from 'src/types/process/process.filters';
 import { PAGINATION_DEFAULT_PAGE, PAGINATION_DEFAULT_SIZE } from 'src/types/pagination.types';
 
@@ -33,6 +33,11 @@ export const ProcessService = {
 
   async findProcessById(id: string): Promise<IProcess> {
     const { data } = await api.get<IProcess>(`/process/${id}`);
+    return data;
+  },
+
+  async updateProcessStatus(id: string, payload: IProcessStatus) {
+    const { data } = await api.patch<IProcessStatus>(`/process/${id}/status`, payload);
     return data;
   },
 };

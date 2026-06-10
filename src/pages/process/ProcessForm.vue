@@ -86,10 +86,10 @@ async function onSubmit() {
           <!-- NUMERO DO PROCESSO -->
           <div class="col-12 col-md-6">
             <q-input
-              v-model="formProcess.numberProcess"
+              v-model="formProcess.processNumber"
               outlined
               label="Numero do Processo"
-              :rules="rulesProcess.numberProcess"
+              :rules="rulesProcess.processNumber"
             >
               <template #prepend>
                 <q-icon name="gavel" />

@@ -3,7 +3,7 @@ import type { IProcessMovement, IProcessMovementCreate } from 'src/types/process
 
 export const ProcessMovimentService = {
   async findAllProcessMovimentById(id: string): Promise<IProcessMovement[]> {
-    const { data } = await api.get<IProcessMovement[]>(`/process-movements/${id}`);
+    const { data } = await api.get<IProcessMovement[]>(`/process-movements/process/${id}`);
     return data;
   },
 
@@ -14,7 +14,22 @@ export const ProcessMovimentService = {
 
   async createProcessMovement(payload: IProcessMovementCreate): Promise<IProcessMovementCreate> {
     console.log('Enviando dados para api...', payload);
-    const { data } = await api.post<IProcessMovementCreate>('/process/movement', payload);
+    const { data } = await api.post<IProcessMovementCreate>('/process-movements', payload);
+    return data;
+  },
+
+  async findProcessMovementById(id: string): Promise<IProcessMovementCreate> {
+    const { data } = await api.get<IProcessMovementCreate>(`/process-movements/${id}`);
+    return data;
+  },
+
+  async updateProcessMovement(
+    id: string,
+    payload: IProcessMovementCreate,
+  ): Promise<IProcessMovementCreate> {
+    console.log('Payload: ', payload);
+    debugger;
+    const { data } = await api.put<IProcessMovementCreate>(`/process-movements/${id}`, payload);
     return data;
   },
 };

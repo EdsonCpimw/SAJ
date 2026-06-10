@@ -6,8 +6,8 @@
   </div>
   <div class="q-pa-md">
     <q-table
-      title="Lista de Movimentações de Processos"
-      :rows="rowsProcessMovements"
+      title="Lista de Movimentações do Processo"
+      :rows="processMovements"
       :columns="columns"
       row-key="id"
       :pagination="{ rowsPerPage: 10 }"
@@ -25,8 +25,16 @@
       <!-- COLUNA STATUS -->
       <template #body-cell-status="props">
         <q-td :props="props">
-          <q-badge :color="getProcessStatusColor(props.row.process.status)">
-            {{ getProcessStatusLabel(props.row.process.status) }}
+          <q-badge :color="getProcessStatusColor(props.row.status)">
+            {{ getProcessStatusLabel(props.row.status) }}
+          </q-badge>
+        </q-td>
+      </template>
+      <!-- COLUNA TIPO DE MOVIMENTAÇÃO -->
+      <template #body-cell-type="props">
+        <q-td :props="props">
+          <q-badge>
+            {{ getProcessMovementTypeLabel(props.row.type) }}
           </q-badge>
         </q-td>
       </template>
@@ -39,7 +47,12 @@
             round
             color="warning"
             icon="edit"
-            @click="$router.push({ name: 'process-edit', params: { id: props.row.id } })"
+            @click="
+              $router.push({
+                name: ROUTE_NAMES.PROCESS_MOVEMENT_EDIT,
+                params: { processId: processId, id: props.row.id },
+              })
+            "
           >
             <q-tooltip>Editar</q-tooltip>
           </q-btn>
@@ -61,16 +74,22 @@ import {
   getProcessStatusColor,
   getProcessStatusLabel,
 } from '../../types/enum/process/process-status.enum';
-import type { IProcess } from 'src/types/process.types';
 import { useProcessMoviment } from 'src/composables/movements/useProcessMoviment';
 import type { IProcessMovement } from 'src/types/process-movment.types';
 import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { getProcessMovementTypeLabel } from 'src/types/enum/movements/processMovementType.enum';
+import { ROUTE_NAMES } from 'src/constants/routes.constants';
+import { fromISO } from 'src/utils/date.utils';
 
-// const $q = useQuasar();
-const { rowsProcessMovements, findAllProcessMovement } = useProcessMoviment();
+const route = useRoute();
+const processId = route.params.processId;
+const { processMovements, findProcessMovimentsById } = useProcessMoviment();
 
 onMounted(async () => {
-  await findAllProcessMovement();
+  if (processId) {
+    await findProcessMovimentsById(processId as string);
+  }
 });
 
 const columns: QTableColumn[] = [
@@ -78,37 +97,49 @@ const columns: QTableColumn[] = [
     name: 'processNumber',
     label: 'Numero do Processo',
     align: 'left',
-    field: (row: IProcessMovement) => row.process?.numberProcess,
-    sortable: true,
-  },
-  {
-    name: 'title',
-    required: true,
-    label: 'Título',
-    align: 'left',
-    field: (row: { title: string }) => row.title,
-    sortable: true,
-  },
-  {
-    name: 'description',
-    label: 'Descrição',
-    align: 'left',
-    field: (row: { description: string }) => row.description,
+    field: (row: IProcessMovement) => row.processNumber,
     sortable: true,
   },
   {
     name: 'status',
     label: 'Status do processo',
     align: 'left',
-    field: (row: IProcessMovement) => row.process?.status,
+    field: (row: IProcessMovement) => row.status,
     sortable: true,
   },
-
+  {
+    name: 'title',
+    required: true,
+    label: 'Título da Movimentação',
+    align: 'left',
+    field: (row: { title: string }) => row.title,
+    sortable: true,
+  },
+  {
+    name: 'description',
+    label: 'Descrição da Movimentação',
+    align: 'left',
+    field: (row: { description: string }) => row.description,
+    sortable: true,
+  },
+  {
+    name: 'dateEvent',
+    label: 'Data e Hora da Audiência',
+    align: 'left',
+    field: (row: IProcessMovement) => (row.dateEvent ? fromISO(row.dateEvent) : '-'),
+  },
+  {
+    name: 'type',
+    label: 'Tipo de Movimentação',
+    align: 'left',
+    field: (row: IProcessMovement) => row.type,
+    sortable: true,
+  },
   {
     name: 'createdAt',
     label: 'Data de Cadastro',
     align: 'left',
-    field: (row: IProcess) =>
+    field: (row: IProcessMovement) =>
       row.createdAt ? new Date(row.createdAt).toLocaleDateString('pt-BR') : '-',
   },
   {

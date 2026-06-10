@@ -1,6 +1,6 @@
 import { ProcessService } from 'src/services/process.service';
 import { ProcessStatus } from 'src/types/enum/process/process-status.enum';
-import type { IProcess } from 'src/types/process.types';
+import type { IProcess, IProcessCreate, IProcessStatus } from 'src/types/process.types';
 import { reactive, ref } from 'vue';
 import axios from 'axios';
 import { ProcessPriority } from 'src/types/enum/process/process-priority.enum';
@@ -9,11 +9,12 @@ import { ProcessLegalArea } from 'src/types/enum/process/process-legal-area.enum
 export function useProcessForm() {
   const loading = ref(false);
   const error = ref<string | null>(null);
-  const process = ref<IProcess | null>(null);
+  const processStatus = ref<IProcessStatus | null>(null);
+  const processCreate = ref<IProcessCreate | null>(null);
 
-  const formProcess = reactive<IProcess>({
+  const formProcess = reactive<IProcessCreate>({
     title: '',
-    numberProcess: '',
+    processNumber: '',
     description: '',
     legalArea: ProcessLegalArea.ADMINISTRATIVE,
     courtDivision: '',
@@ -22,8 +23,12 @@ export function useProcessForm() {
     priority: ProcessPriority.MEDIUM,
   });
 
+  const formStatusProcess = reactive<IProcessStatus>({
+    status: ProcessStatus.CANCELLED,
+  });
+
   function resetFormProcess() {
-    formProcess.numberProcess = '';
+    formProcess.processNumber = '';
     formProcess.title = '';
     formProcess.description = '';
     formProcess.status = ProcessStatus.OPEN;
@@ -35,7 +40,7 @@ export function useProcessForm() {
 
   const rulesProcess = {
     title: [(v: string) => !!v || 'Título é obrigatório'],
-    numberProcess: [(v: string) => !!v || 'Número do processo é obrigatório'],
+    processNumber: [(v: string) => !!v || 'Número do processo é obrigatório'],
     description: [(v: string) => !!v || 'Descrição é obrigatória'],
     status: [(v: string) => !!v || 'Status é obrigatório'],
     legalArea: [(v: string) => !!v || 'Área trabalhista é obrigatório'],
@@ -48,7 +53,7 @@ export function useProcessForm() {
     error.value = null;
     try {
       const response = await ProcessService.saveProcess(formProcess);
-      process.value = response;
+      processCreate.value = response;
     } catch (erro) {
       if (axios.isAxiosError(erro)) {
         const data = erro.response?.data;
@@ -78,7 +83,7 @@ export function useProcessForm() {
 
   function fillFormProcess(process: IProcess) {
     formProcess.title = process.title;
-    formProcess.numberProcess = process.numberProcess;
+    formProcess.processNumber = process.processNumber;
     formProcess.description = process.description;
     formProcess.status = process.status;
     formProcess.legalArea = process.legalArea;
@@ -92,7 +97,7 @@ export function useProcessForm() {
     error.value = null;
     try {
       const response = await ProcessService.updateProcess(id, formProcess);
-      process.value = response;
+      processCreate.value = response;
     } catch (erro) {
       if (axios.isAxiosError(erro)) {
         const data = erro.response?.data;
@@ -103,12 +108,33 @@ export function useProcessForm() {
     }
   }
 
+  async function updateStatusProcess(id: string) {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await ProcessService.updateProcessStatus(id, formStatusProcess);
+      processStatus.value = response;
+    } catch (erro) {
+      if (axios.isAxiosError(erro)) {
+        const data = erro.response?.data;
+        error.value = data?.message || data?.error || 'Erro desconhecido';
+      } else {
+        error.value = 'Erro inesperado';
+      }
+      throw erro;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     formProcess,
     rulesProcess,
+    formStatusProcess,
     createProcess,
     resetFormProcess,
     updateProcess,
     findProcessById,
+    updateStatusProcess,
   };
 }

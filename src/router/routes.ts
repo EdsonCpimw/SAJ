@@ -1,3 +1,4 @@
+import { ROUTE_NAMES } from 'src/constants/routes.constants';
 import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -64,7 +65,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'process-list',
+        name: ROUTE_NAMES.PROCESS_LIST,
         component: () => import('pages/process/ListProcess.vue'),
         meta: {
           breadcrumbs: [
@@ -75,7 +76,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'create',
-        name: 'process-create',
+        name: ROUTE_NAMES.PROCESS_CREATE,
         component: () => import('pages/process/ProcessForm.vue'),
         meta: {
           breadcrumbs: [
@@ -87,7 +88,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'edit/:id',
-        name: 'process-edit',
+        name: ROUTE_NAMES.PROCESS_EDIT,
         component: () => import('pages/process/ProcessForm.vue'),
         meta: {
           breadcrumbs: [
@@ -103,29 +104,42 @@ const routes: RouteRecordRaw[] = [
    * ROTAS DE MOVIMENTAÇÃO DE PROCESSOS
    */
   {
-    path: '/process/movements',
+    path: '/process/:processId/movements',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        name: 'process-movement-list',
+        name: ROUTE_NAMES.PROCESS_MOVEMENT_LIST,
         component: () => import('pages/process/ProcessMovement.vue'),
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'folder_open', to: { name: ROUTE_NAMES.PROCESS_LIST } },
             { label: 'Movimentação de processos', icon: 'folder_open' },
           ],
         },
       },
       {
         path: 'create',
-        name: 'process-movement-create',
+        name: ROUTE_NAMES.PROCESS_MOVEMENT_CREATE,
         component: () => import('pages/process/ProcessMovementForm.vue'),
         meta: {
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
-            { label: 'Processos', icon: 'folder_open', to: { name: 'process' } },
+            { label: 'Processos', icon: 'folder_open', to: { name: ROUTE_NAMES.PROCESS_LIST } },
             { label: 'Cadastro de movimentação de processos', icon: 'gavel' },
+          ],
+        },
+      },
+      {
+        path: 'edit/:id',
+        name: ROUTE_NAMES.PROCESS_MOVEMENT_EDIT,
+        component: () => import('pages/process/ProcessMovementForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Processos', icon: 'folder_open', to: { name: ROUTE_NAMES.PROCESS_LIST } },
+            { label: 'Alteração de movimentação do processo', icon: 'edit' },
           ],
         },
       },

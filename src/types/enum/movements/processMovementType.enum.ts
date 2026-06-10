@@ -188,8 +188,8 @@ export const ProcessMovementTypeLabel: Record<ProcessMovementType, string> = {
   [ProcessMovementType.REACTIVATED]: 'Reativado',
 };
 
-export function getProcessMovementTypeLabel(status: string): string {
+export function getProcessMovementTypeLabel(type: string): string {
   return (
-    ProcessMovementTypeLabel[status as ProcessMovementType] ?? 'Tipo de movimentação desconhecida'
+    ProcessMovementTypeLabel[type as ProcessMovementType] ?? 'Tipo de movimentação desconhecida'
   );
 }
