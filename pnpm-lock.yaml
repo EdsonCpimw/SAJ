@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.16.1
         version: 1.16.1
+      keycloak-js:
+        specifier: ^26.2.4
+        version: 26.2.4
       pinia:
         specifier: ^3.0.1
         version: 3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3))
@@ -2061,6 +2064,9 @@ packages:
 
   jsonfile@6.2.1:
     resolution: {integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==}
+
+  keycloak-js@26.2.4:
+    resolution: {integrity: sha512-PnXpR3ubETGOt0B/Qt2lxmPbkZr5bc3vlQsOqDoTPPQsZRp7JjhTKxlJ187uWh8qJhvBab6Gsjb06a8ayOPfuw==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -5200,6 +5206,8 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  keycloak-js@26.2.4: {}
 
   keyv@4.5.4:
     dependencies:

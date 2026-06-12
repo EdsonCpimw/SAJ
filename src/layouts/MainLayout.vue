@@ -15,7 +15,7 @@
           <q-tooltip>{{ $q.dark.isActive ? 'Modo claro' : 'Modo escuro' }}</q-tooltip>
         </q-btn>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <AvatarMenu />
       </q-toolbar>
     </q-header>
 
@@ -57,15 +57,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { IBreadcrumb } from 'src/types/router.types';
 import { useQuasar } from 'quasar';
+import AvatarMenu from 'src/components/AvatarMenu.vue'; // ← adiciona
+import { useDarkMode } from 'src/composables/useDarkMode';
 
 const route = useRoute();
 const $q = useQuasar();
+const { leftDrawerOpen, toggleDark, toggleLeftDrawer } = useDarkMode();
 
 const breadcrumbs = computed<IBreadcrumb[]>(() => (route.meta.breadcrumbs as IBreadcrumb[]) ?? []);
 
@@ -75,11 +78,6 @@ onMounted(() => {
     $q.dark.set(saved === 'true');
   }
 });
-
-function toggleDark() {
-  $q.dark.toggle();
-  localStorage.setItem('darkMode', String($q.dark.isActive));
-}
 
 const linksList: EssentialLinkProps[] = [
   {
@@ -106,10 +104,4 @@ const linksList: EssentialLinkProps[] = [
     ],
   },
 ];
-
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
 </script>

@@ -10,8 +10,16 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
     component: () => import('layouts/AuthLayout.vue'),
+    meta: { public: true },
     children: [{ path: 'register', component: () => import('pages/auth/RegisterPage.vue') }],
   },
+  {
+    path: '/auth',
+    component: () => import('layouts/AuthLayout.vue'),
+    meta: { public: true },
+    children: [{ path: 'login', component: () => import('pages/auth/LoginPage.vue') }],
+  },
+
   /*
    * ROTAS DE USUÁRIOS
    */

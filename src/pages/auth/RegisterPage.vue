@@ -143,6 +143,7 @@
       <!-- LINK LOGIN -->
       <div class="text-center q-pb-md">
         <span class="text-grey-6">Já tem conta? </span>
+        <router-link to="/auth/login" class="text-primary">Entrar</router-link>
       </div>
     </q-card>
   </q-page>
