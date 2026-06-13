@@ -1,7 +1,10 @@
 import { boot } from 'quasar/wrappers';
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
+import { useAuthStore } from 'src/stores/auth.store';
 // import keycloak from './keycloak';
+
+const { refreshAccessToken, logout, token } = useAuthStore();
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -32,11 +35,16 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refresh_token');
-      window.location.href = '/auth/login';
+      try {
+        console.log('RENOVANDO TOKEN: ');
+        await refreshAccessToken();
+        error.config.headers.Authorization = `Bearer ${token}`;
+        return api.request(error.config);
+      } catch {
+        await logout();
+      }
     }
     return Promise.reject(error instanceof Error ? error : new Error(String(error)));
   },

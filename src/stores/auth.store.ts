@@ -56,12 +56,6 @@ export const useAuthStore = defineStore('auth', () => {
       }
     }
   }
-  // Funciona se for usar a tela do keycloak
-  // async function login() {
-  //   await keycloak.login({
-  //     redirectUri: window.location.origin + '/home',
-  //   });
-  // }
 
   // Efetua o login e persistencia dos dados no localStorage
   async function login(email: string, password: string) {
@@ -95,9 +89,6 @@ export const useAuthStore = defineStore('auth', () => {
       userName: payload.preferred_username,
       sub: payload.sub,
     };
-    console.log('Data: ', data);
-    console.log('userKeycloak: ', userKeycloak);
-
     localStorage.setItem('token', data.access_token);
     localStorage.setItem('refresh_token', data.refresh_token);
   }
@@ -125,18 +116,39 @@ export const useAuthStore = defineStore('auth', () => {
     window.location.href = '/auth/login';
   }
 
-  // Funciona se for usar a tela do keycloak
-  // async function logout() {
-  //   await keycloak.logout({
-  //     redirectUri: window.location.origin,
-  //   });
-  // }
+  // Função para atualização do token através do refresh token
+  async function refreshAccessToken() {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) {
+      await logout();
+      return;
+    }
 
-  // function loadUser() {
-  //   isAuthenticated.value = keycloak.authenticated ?? false;
-  //   token.value = keycloak.token ?? null;
-  //   user.value = (keycloak.tokenParsed as IUser) ?? null;
-  // }
+    const params = new URLSearchParams({
+      grant_type: 'refresh_token',
+      client_id: 'saj-front',
+      refresh_token: refreshToken,
+    });
+
+    const response = await fetch(
+      'http://192.168.0.9:28080/realms/SAJ/protocol/openid-connect/token',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params,
+      },
+    );
+
+    if (!response.ok) {
+      await logout();
+      return;
+    }
+
+    const data = (await response.json()) as { access_token: string; refresh_token: string };
+    token.value = data.access_token;
+    localStorage.setItem('token', data.access_token);
+    localStorage.setItem('refresh_token', data.refresh_token);
+  }
   return {
     user,
     userKeycloak,
@@ -147,6 +159,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     login,
     logout,
-    // loadUser,
+    refreshAccessToken,
   };
 });
