@@ -14,7 +14,7 @@ export function useProcessForm() {
 
   const formProcess = reactive<IProcessCreate>({
     title: '',
-    processNumber: '',
+    numberProcess: '',
     description: '',
     legalArea: ProcessLegalArea.ADMINISTRATIVE,
     courtDivision: '',
@@ -28,7 +28,7 @@ export function useProcessForm() {
   });
 
   function resetFormProcess() {
-    formProcess.processNumber = '';
+    formProcess.numberProcess = '';
     formProcess.title = '';
     formProcess.description = '';
     formProcess.status = ProcessStatus.OPEN;
@@ -83,7 +83,7 @@ export function useProcessForm() {
 
   function fillFormProcess(process: IProcess) {
     formProcess.title = process.title;
-    formProcess.processNumber = process.processNumber;
+    formProcess.numberProcess = process.numberProcess;
     formProcess.description = process.description;
     formProcess.status = process.status;
     formProcess.legalArea = process.legalArea;

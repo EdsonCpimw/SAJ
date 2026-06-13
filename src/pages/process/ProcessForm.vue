@@ -86,7 +86,7 @@ async function onSubmit() {
           <!-- NUMERO DO PROCESSO -->
           <div class="col-12 col-md-6">
             <q-input
-              v-model="formProcess.processNumber"
+              v-model="formProcess.numberProcess"
               outlined
               label="Numero do Processo"
               :rules="rulesProcess.processNumber"

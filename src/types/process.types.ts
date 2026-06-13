@@ -11,7 +11,7 @@ export interface IProcess {
   assignedTo?: UUID;
 
   title: string;
-  processNumber: string;
+  numberProcess: string;
   description: string;
   status: ProcessStatus;
   createdAt?: string;
@@ -25,7 +25,7 @@ export interface IProcess {
 
 export interface IProcessCreate {
   title: string;
-  processNumber: string;
+  numberProcess: string;
   description: string;
   status: ProcessStatus;
   legalArea: ProcessLegalArea;
@@ -36,7 +36,7 @@ export interface IProcessCreate {
 
 export interface IProcessSummary {
   processId: string;
-  processNumber: string;
+  numberProcess: string;
   status: string;
 }
 
