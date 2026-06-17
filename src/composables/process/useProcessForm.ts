@@ -21,6 +21,7 @@ export function useProcessForm() {
     court: '',
     status: ProcessStatus.OPEN,
     priority: ProcessPriority.MEDIUM,
+    clientId: '',
   });
 
   const formStatusProcess = reactive<IProcessStatus>({
@@ -36,6 +37,7 @@ export function useProcessForm() {
     formProcess.courtDivision = '';
     formProcess.court = '';
     formProcess.priority = ProcessPriority.MEDIUM;
+    formProcess.clientId = '';
   }
 
   const rulesProcess = {

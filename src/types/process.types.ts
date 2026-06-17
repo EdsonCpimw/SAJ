@@ -32,6 +32,7 @@ export interface IProcessCreate {
   courtDivision: string;
   court: string;
   priority: ProcessPriority;
+  clientId: string;
 }
 
 export interface IProcessSummary {

@@ -75,7 +75,9 @@ export const useAuthStore = defineStore('auth', () => {
       },
     );
 
-    if (!response.ok) throw new Error('Credenciais inválidas');
+    if (!response.ok) {
+      throw new Error('Credenciais inválidas');
+    }
 
     const data = (await response.json()) as { access_token: string; refresh_token: string };
     const payload = parseToken(data.access_token);

@@ -1,7 +1,7 @@
 import { api } from 'src/boot/axios';
-import type { IUser, IUserWithCompany, IUserCreate } from 'src/types/user/user.types';
+import type { IUser, IUserWithCompany, IUserCreate, IClients } from 'src/types/user/user.types';
 import type { ICompanyCreate } from 'src/types/company.types';
-import type { IUserFilters } from 'src/types/user/user.filters';
+import type { IClientsFilters, IUserFilters } from 'src/types/user/user.filters';
 import type { IPageResponse } from 'src/types/pagination.types';
 import { PAGINATION_DEFAULT_PAGE, PAGINATION_DEFAULT_SIZE } from 'src/types/pagination.types';
 
@@ -20,6 +20,15 @@ export const UserService = {
         size: filters?.size ?? PAGINATION_DEFAULT_SIZE,
         sortBy: filters?.sortBy,
         direction: filters?.direction,
+      },
+    });
+    return data;
+  },
+
+  async findClientsWithFilters(filters?: IClientsFilters): Promise<IClients[]> {
+    const { data } = await api.get<IClients[]>('/users/clients', {
+      params: {
+        search: filters?.search,
       },
     });
     return data;

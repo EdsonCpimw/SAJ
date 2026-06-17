@@ -20,3 +20,9 @@ export interface IUserResponse {
 export interface IUserWithCompany extends IUser {
   companyName: string;
 }
+
+export interface IClients {
+  id?: UUID;
+  name: string;
+  email: string;
+}

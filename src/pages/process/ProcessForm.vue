@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { ProcessLegalAreaOptions } from '../../types/enum/process/process-legal-area.enum';
 import { ProcessPriorityOptions } from '../../types/enum/process/process-priority.enum';
+import { useUsers } from 'src/composables/users/useUsers';
 
 const isEditing = computed(() => !!route.params.id);
 const router = useRouter();
@@ -15,6 +16,7 @@ const subtitle = computed(() =>
   isEditing.value ? 'Editar informações do processo' : 'Dados do processo',
 );
 const loading = ref(false);
+
 const {
   formProcess,
   rulesProcess,
@@ -25,6 +27,10 @@ const {
 } = useProcessForm();
 const formRef = ref();
 const $q = useQuasar();
+const { rowsClients, loadingClients, findClients } = useUsers();
+
+// options do select
+const clientOptions = computed(() => rowsClients.value);
 
 onMounted(async () => {
   if (isEditing.value) {
@@ -34,6 +40,12 @@ onMounted(async () => {
 
 function goBack() {
   void router.push({ name: 'process-list' });
+}
+
+// função chamada pelo @filter do select
+async function filterClients(search: string, update: (fn: () => void) => void) {
+  await findClients({ search });
+  update(() => {});
 }
 
 async function onSubmit() {
@@ -191,6 +203,35 @@ async function onSubmit() {
                 <q-icon name=" account_balance" />
               </template>
             </q-input>
+          </div>
+          <!-- CLIENTE -->
+          <div class="col-12 col-md-6">
+            <q-select
+              v-model="formProcess.clientId"
+              :options="clientOptions"
+              option-label="email"
+              option-value="id"
+              emit-value
+              map-options
+              use-input
+              fill-input
+              hide-selected
+              input-debounce="500"
+              outlined
+              label="Cliente"
+              :loading="loadingClients"
+              @filter="filterClients"
+            >
+              <template #prepend>
+                <q-icon name="person" />
+              </template>
+
+              <template #no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> Nenhum cliente encontrado </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
         </q-form>
       </q-card-section>

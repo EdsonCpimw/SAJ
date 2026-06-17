@@ -1,14 +1,16 @@
 import { ref } from 'vue';
 import { UserService } from 'src/services/user.service';
-import type { IUserWithCompany } from 'src/types/user/user.types';
+import type { IClients, IUserWithCompany } from 'src/types/user/user.types';
 import axios from 'axios';
-import type { IUserFilters } from 'src/types/user/user.filters';
+import type { IClientsFilters, IUserFilters } from 'src/types/user/user.filters';
 
 export function useUsers() {
   const rows = ref<IUserWithCompany[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
   const totalElements = ref(0);
+  const rowsClients = ref<IClients[]>([]);
+  const loadingClients = ref(false);
 
   const pagination = ref({
     page: 1,
@@ -40,6 +42,20 @@ export function useUsers() {
     }
   }
 
+  async function findClients(filters?: IClientsFilters) {
+    loadingClients.value = true;
+    error.value = null;
+    try {
+      const response = await UserService.findClientsWithFilters(filters);
+      rowsClients.value = response;
+    } catch (err) {
+      error.value = 'Erro ao buscar clientes';
+      console.error(err);
+    } finally {
+      loadingClients.value = false;
+    }
+  }
+
   async function toggleUser(id: string) {
     loading.value = true;
     error.value = null;
@@ -64,7 +80,10 @@ export function useUsers() {
     error,
     pagination,
     totalElements,
+    rowsClients,
+    loadingClients,
     findAllUsers,
     toggleUser,
+    findClients,
   };
 }

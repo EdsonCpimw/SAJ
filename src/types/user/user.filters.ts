@@ -6,3 +6,7 @@ export interface IUserFilters {
   sortBy?: string | undefined;
   direction?: 'asc' | 'desc' | undefined;
 }
+
+export interface IClientsFilters {
+  search?: string | undefined;
+}
