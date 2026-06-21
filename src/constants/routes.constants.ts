@@ -13,4 +13,5 @@ export const ROUTE_NAMES = {
   USER_LIST: 'user-list',
   USER_CREATE: 'user-create',
   USER_EDIT: 'user-edit',
+  USER_EDIT_PROFILE: 'user-profile',
 } as const;

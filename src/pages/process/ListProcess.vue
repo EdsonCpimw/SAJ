@@ -340,8 +340,7 @@ function openProcessUpdateStatusDialog(process: IProcess) {
 
 watchDebounced(
   search,
-  async (newValue) => {
-    console.log('search mudou:', newValue);
+  async () => {
     pagination.value.page = 1;
     await findAllProcess({
       search: search.value || undefined,

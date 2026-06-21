@@ -7,6 +7,7 @@ import { useQuasar } from 'quasar';
 import { ProcessLegalAreaOptions } from '../../types/enum/process/process-legal-area.enum';
 import { ProcessPriorityOptions } from '../../types/enum/process/process-priority.enum';
 import { useUsers } from 'src/composables/users/useUsers';
+import { ROUTE_NAMES } from 'src/constants/routes.constants';
 
 const isEditing = computed(() => !!route.params.id);
 const router = useRouter();
@@ -15,11 +16,14 @@ const title = computed(() => (isEditing.value ? 'Editar processo' : 'Novo proces
 const subtitle = computed(() =>
   isEditing.value ? 'Editar informações do processo' : 'Dados do processo',
 );
+const btnLabel = computed(() => (isEditing.value ? 'Atualizar' : 'Salvar'));
+
 const loading = ref(false);
 
 const {
   formProcess,
   rulesProcess,
+  process,
   createProcess,
   resetFormProcess,
   updateProcess,
@@ -35,11 +39,14 @@ const clientOptions = computed(() => rowsClients.value);
 onMounted(async () => {
   if (isEditing.value) {
     await findProcessById(route.params.id as string);
+    if (formProcess.clientId && process.value?.client) {
+      rowsClients.value = [process.value.client];
+    }
   }
 });
 
 function goBack() {
-  void router.push({ name: 'process-list' });
+  void router.push({ name: ROUTE_NAMES.PROCESS_LIST });
 }
 
 // função chamada pelo @filter do select
@@ -240,7 +247,7 @@ async function onSubmit() {
       <q-card-actions class="q-pa-md">
         <q-btn flat label="Cancelar" color="grey-7" @click="goBack" />
         <q-space />
-        <q-btn label="Salvar" color="primary" icon="save" :loading="loading" @click="onSubmit" />
+        <q-btn :label="btnLabel" color="primary" icon="save" :loading="loading" @click="onSubmit" />
       </q-card-actions>
     </q-card>
   </q-page>

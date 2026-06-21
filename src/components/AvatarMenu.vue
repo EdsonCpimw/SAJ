@@ -21,7 +21,7 @@
       <q-separator />
 
       <!-- Perfil -->
-      <q-item clickable v-close-popup @click="goToProfile">
+      <q-item clickable v-close-popup :to="{ name: 'user-profile' }">
         <q-item-section avatar>
           <q-icon name="person_outline" />
         </q-item-section>
@@ -43,10 +43,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/auth.store';
 
-const router = useRouter();
+// const router = useRouter();
 const authStore = useAuthStore();
 
 const user = computed(() => authStore.userKeycloak);
@@ -61,9 +61,9 @@ const initials = computed(() => {
     .toUpperCase();
 });
 
-function goToProfile() {
-  void router.push('/profile');
-}
+// function goToProfile() {
+//   void router.push('/profile');
+// }
 
 async function handleLogout() {
   await authStore.logout();

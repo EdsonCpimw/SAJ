@@ -11,6 +11,7 @@ export function useProcessForm() {
   const error = ref<string | null>(null);
   const processStatus = ref<IProcessStatus | null>(null);
   const processCreate = ref<IProcessCreate | null>(null);
+  const process = ref<IProcess | null>(null);
 
   const formProcess = reactive<IProcessCreate>({
     title: '',
@@ -72,6 +73,7 @@ export function useProcessForm() {
   async function findProcessById(id: string) {
     try {
       const response = await ProcessService.findProcessById(id);
+      process.value = response;
       fillFormProcess(response);
     } catch (erro) {
       if (axios.isAxiosError(erro)) {
@@ -92,6 +94,7 @@ export function useProcessForm() {
     formProcess.court = process.court;
     formProcess.courtDivision = process.courtDivision;
     formProcess.priority = process.priority;
+    formProcess.clientId = process.client.id ?? '';
   }
 
   async function updateProcess(id: string) {
@@ -133,6 +136,7 @@ export function useProcessForm() {
     formProcess,
     rulesProcess,
     formStatusProcess,
+    process,
     createProcess,
     resetFormProcess,
     updateProcess,

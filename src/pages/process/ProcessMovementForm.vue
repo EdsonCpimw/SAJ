@@ -15,6 +15,7 @@ const loading = ref(false);
 const title = ref('Nova movimentação processo');
 const subtitle = ref('Dados da movimentação de processo');
 const isEditing = computed(() => route.name == ROUTE_NAMES.PROCESS_MOVEMENT_EDIT);
+const btnLabel = computed(() => (isEditing.value ? 'Atualizar' : 'Salvar'));
 
 const {
   formProcessMovement,
@@ -26,7 +27,6 @@ const {
 
 onMounted(async () => {
   if (route.name !== ROUTE_NAMES.PROCESS_MOVEMENT_CREATE) {
-    console.log('URL: ', route);
     title.value = 'Editar movimentação processo';
     subtitle.value = 'Editar informações do processo';
     await findProcessMovementById(route.params.id as string);
@@ -34,7 +34,7 @@ onMounted(async () => {
 });
 
 function goBack() {
-  void router.push({ name: 'process-list' });
+  void router.push({ name: ROUTE_NAMES.PROCESS_MOVEMENT_LIST });
 }
 
 async function onSubmit() {
@@ -195,7 +195,7 @@ async function onSubmit() {
       <q-card-actions class="q-pa-md">
         <q-btn flat label="Cancelar" color="grey-7" @click="goBack" />
         <q-space />
-        <q-btn label="Salvar" color="primary" icon="save" :loading="loading" @click="onSubmit" />
+        <q-btn :label="btnLabel" color="primary" icon="save" :loading="loading" @click="onSubmit" />
       </q-card-actions>
     </q-card>
   </q-page>

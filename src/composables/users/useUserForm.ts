@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue';
-import type { IUser, IUserCreate } from 'src/types/user/user.types';
+import type { IUser, IUserCreate, IUserPerfil } from 'src/types/user/user.types';
 import axios from 'axios';
 import { UserService } from 'src/services/user.service';
 
@@ -10,6 +10,7 @@ export function useUserForm() {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const user = ref<IUser | null>(null);
+  const userPerfil = ref<IUserPerfil | null>(null);
 
   const formCompany = reactive({
     name: '',
@@ -29,6 +30,7 @@ export function useUserForm() {
 
   const formUser = reactive<IUserCreate>({
     name: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -37,6 +39,10 @@ export function useUserForm() {
   const rulesUser = {
     name: [
       (v: string) => !!v || 'Nome é obrigatório',
+      (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
+    ],
+    lastName: [
+      (v: string) => !!v || 'Sobrenome é obrigatório',
       (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
     ],
     email: [
@@ -57,6 +63,27 @@ export function useUserForm() {
     ],
   };
 
+  const formUserPerfil = reactive<IUserPerfil>({
+    name: '',
+    lastName: '',
+    phone: '',
+  });
+
+  const rulesUserPerfil = {
+    name: [
+      (v: string) => !!v || 'Nome é obrigatório',
+      (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
+    ],
+    lastName: [
+      (v: string) => !!v || 'Nome é obrigatório',
+      (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
+    ],
+    phone: [
+      (v: string) => !!v || 'Telefone é obrigatório',
+      (v: string) => v.length >= 10 || 'Telefone inválido',
+    ],
+  };
+
   function resetForm() {
     resetFormUser();
     resetFormCompany();
@@ -64,6 +91,7 @@ export function useUserForm() {
 
   function resetFormUser() {
     formUser.name = '';
+    formUser.lastName = '';
     formUser.email = '';
     formUser.phone = '';
     formUser.password = '';
@@ -110,8 +138,33 @@ export function useUserForm() {
     }
   }
 
+  async function updateUserPerfil() {
+    loading.value = true;
+    error.value = null;
+    try {
+      userPerfil.value = await UserService.updateUserPerfil(formUserPerfil);
+    } catch (erro) {
+      if (axios.isAxiosError(erro)) {
+        const data = erro.response?.data;
+        error.value = data?.message || data?.error || `Erro desconhecido`;
+      } else {
+        error.value = 'Erro inesperado';
+      }
+      throw erro;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  function fillPerfilForm(perfil: IUserPerfil) {
+    formUserPerfil.name = perfil.name;
+    formUserPerfil.lastName = perfil.lastName;
+    formUserPerfil.phone = perfil.phone;
+  }
+
   function fillForm(user: IUser) {
     formUser.name = user.name;
+    formUser.lastName = user.lastName;
     formUser.email = user.email;
     formUser.phone = user.phone;
   }
@@ -124,11 +177,15 @@ export function useUserForm() {
     showPassword,
     rulesUser,
     rulesCompany,
+    formUserPerfil,
+    rulesUserPerfil,
     resetForm,
     resetFormUser,
     resetFormCompany,
     createUser,
     fillForm,
     updateUser,
+    updateUserPerfil,
+    fillPerfilForm,
   };
 }

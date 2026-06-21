@@ -39,7 +39,17 @@
         <!-- STEP 2 — USUÁRIO -->
         <q-step :name="2" title="Usuário" icon="person" :done="step > 2">
           <q-form ref="stepUsuarioRef" class="q-gutter-md">
-            <q-input v-model="formUser.name" label="Nome completo" outlined :rules="rulesUser.name">
+            <q-input v-model="formUser.name" label="Nome" outlined :rules="rulesUser.name">
+              <template #prepend>
+                <q-icon name="person" />
+              </template>
+            </q-input>
+            <q-input
+              v-model="formUser.lastName"
+              label="Sobrenome"
+              outlined
+              :rules="rulesUser.lastName"
+            >
               <template #prepend>
                 <q-icon name="person" />
               </template>
@@ -191,7 +201,7 @@ async function onSubmit() {
       position: 'top',
     });
     resetForm();
-    await router.push('/');
+    await router.push({ name: 'home' });
   } catch {
     $q.notify({
       type: 'negative',

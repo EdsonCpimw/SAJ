@@ -13,7 +13,6 @@ export const ProcessMovimentService = {
   },
 
   async createProcessMovement(payload: IProcessMovementCreate): Promise<IProcessMovementCreate> {
-    console.log('Enviando dados para api...', payload);
     const { data } = await api.post<IProcessMovementCreate>('/process-movements', payload);
     return data;
   },
@@ -27,8 +26,6 @@ export const ProcessMovimentService = {
     id: string,
     payload: IProcessMovementCreate,
   ): Promise<IProcessMovementCreate> {
-    console.log('Payload: ', payload);
-    debugger;
     const { data } = await api.put<IProcessMovementCreate>(`/process-movements/${id}`, payload);
     return data;
   },

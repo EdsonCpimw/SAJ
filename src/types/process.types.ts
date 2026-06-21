@@ -2,6 +2,7 @@ import type { UUID } from 'crypto';
 import type { ProcessStatus } from './enum/process/process-status.enum';
 import type { ProcessPriority } from './enum/process/process-priority.enum';
 import type { ProcessLegalArea } from './enum/process/process-legal-area.enum';
+import type { IClients } from './user/user.types';
 
 export interface IProcess {
   id?: UUID;
@@ -21,6 +22,8 @@ export interface IProcess {
   courtDivision: string;
   court: string;
   priority: ProcessPriority;
+
+  client: IClients;
 }
 
 export interface IProcessCreate {
