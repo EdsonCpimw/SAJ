@@ -1,5 +1,11 @@
 import { api } from 'src/boot/axios';
-import type { IUser, IUserWithCompany, IUserCreate, IClients } from 'src/types/user/user.types';
+import type {
+  IUser,
+  IUserWithCompany,
+  IUserCreate,
+  IClients,
+  IUserPerfil,
+} from 'src/types/user/user.types';
 import type { ICompanyCreate } from 'src/types/company.types';
 import type { IClientsFilters, IUserFilters } from 'src/types/user/user.filters';
 import type { IPageResponse } from 'src/types/pagination.types';
@@ -51,6 +57,16 @@ export const UserService = {
 
   async inactiveUserById(id: string): Promise<IUser> {
     const { data } = await api.patch<IUser>(`/users/${id}/status`);
+    return data;
+  },
+
+  async findUserPerfil(): Promise<IUserPerfil> {
+    const { data } = await api.get<IUserPerfil>('users/me');
+    return data;
+  },
+
+  async updateUserPerfil(payload: IUserPerfil): Promise<IUserPerfil> {
+    const { data } = await api.put<IUserPerfil>('users/me', payload);
     return data;
   },
 };

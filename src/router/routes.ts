@@ -17,7 +17,9 @@ const routes: RouteRecordRaw[] = [
     path: '/auth',
     component: () => import('layouts/AuthLayout.vue'),
     meta: { public: true },
-    children: [{ path: 'login', component: () => import('pages/auth/LoginPage.vue') }],
+    children: [
+      { path: 'login', name: 'home', component: () => import('pages/auth/LoginPage.vue') },
+    ],
   },
 
   /*
@@ -58,7 +60,19 @@ const routes: RouteRecordRaw[] = [
           breadcrumbs: [
             { label: 'Home', icon: 'home', to: '/' },
             { label: 'Usuários', icon: 'people', to: { name: 'user-list' } },
-            { label: 'Editar Usuário', icon: 'edit' },
+            { label: 'Editar usuário', icon: 'edit' },
+          ],
+        },
+      },
+      {
+        path: 'profile',
+        name: 'user-profile',
+        component: () => import('pages/users/UserPerfilForm.vue'),
+        meta: {
+          breadcrumbs: [
+            { label: 'Home', icon: 'home', to: '/' },
+            { label: 'Usuários', icon: 'people', to: { name: 'user-list' } },
+            { label: 'Editar Perfil', icon: 'edit' },
           ],
         },
       },
