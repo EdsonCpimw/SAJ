@@ -54,6 +54,10 @@
         </q-card-section>
       </q-form>
       <div class="text-center q-pb-md">
+        <span class="text-grey-6">Esqueceu a senha? </span>
+        <router-link to="/auth/forgot-password" class="text-primary">Trocar senha</router-link>
+      </div>
+      <div class="text-center q-pb-md">
         <span class="text-grey-6">Não tem conta? </span>
         <router-link to="/auth/register" class="text-primary">Criar conta</router-link>
       </div>

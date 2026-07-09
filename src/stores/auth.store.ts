@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { UserService } from 'src/services/user.service';
 import type { ICompanyCreate } from 'src/types/company.types';
 import type { IUser } from 'src/types/user/user.types';
 import { ref } from 'vue';
 import keycloak from 'src/boot/keycloak';
 import type { IUserTokenPayload } from 'src/types/user/user-token.types';
 import type { IUserKeycloak } from 'src/types/user/user-keyclok.types';
+import { KEYCLOAK_REALM, KEYCLOAK_URL } from 'src/constants/keycloak.constants';
+import { AuthService } from 'src/services/auth.service';
 
 // Decodifica o token
 function parseToken(token: string): IUserTokenPayload {
@@ -45,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true;
     error.value = null;
     try {
-      const response = await UserService.register(payload);
+      const response = await AuthService.register(payload);
       user.value = response.user;
     } catch (erro) {
       if (axios.isAxiosError(erro)) {
@@ -67,7 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
     });
 
     const response = await fetch(
-      'http://192.168.0.9:28080/realms/SAJ/protocol/openid-connect/token',
+      `${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

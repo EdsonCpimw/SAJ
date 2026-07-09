@@ -27,6 +27,13 @@
         </q-item-section>
         <q-item-section>Meu perfil</q-item-section>
       </q-item>
+      <!-- Reset Password -->
+      <q-item clickable v-close-popup :to="{ name: 'forgot-password' }">
+        <q-item-section avatar>
+          <q-icon name="lock_reset" />
+        </q-item-section>
+        <q-item-section>Trocar Senha</q-item-section>
+      </q-item>
 
       <q-separator />
 

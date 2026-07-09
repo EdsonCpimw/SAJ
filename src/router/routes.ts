@@ -18,7 +18,32 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/AuthLayout.vue'),
     meta: { public: true },
     children: [
-      { path: 'login', name: 'home', component: () => import('pages/auth/LoginPage.vue') },
+      { path: 'login', name: 'login', component: () => import('pages/auth/LoginPage.vue') },
+    ],
+  },
+  {
+    path: '/auth',
+    component: () => import('layouts/AuthLayout.vue'),
+    meta: { public: true },
+    children: [
+      {
+        path: 'forgot-password',
+        name: 'forgot-password',
+        component: () => import('pages/auth/ForgotPasswordPage.vue'),
+      },
+    ],
+  },
+
+  {
+    path: '/auth',
+    component: () => import('layouts/AuthLayout.vue'),
+    meta: { public: true },
+    children: [
+      {
+        path: 'reset-password',
+        name: 'reset-password',
+        component: () => import('pages/auth/ResetPasswordPage.vue'),
+      },
     ],
   },
 

@@ -104,7 +104,7 @@
                 label="Confirme a senha"
                 outlined
                 :type="showConfirmPassword ? 'text' : 'password'"
-                :rules="rulesUser.password"
+                :rules="rulesUser.confirmPassword"
               >
                 <template #prepend>
                   <q-icon name="lock" />
@@ -190,6 +190,8 @@ async function nextStep() {
 }
 
 async function onSubmit() {
+  const valid = await stepUsuarioRef.value.validate();
+  if (!valid) return;
   try {
     await authStore.register({
       company: toRaw(formCompany),
