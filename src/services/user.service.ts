@@ -6,17 +6,11 @@ import type {
   IClients,
   IUserPerfil,
 } from 'src/types/user/user.types';
-import type { ICompanyCreate } from 'src/types/company.types';
 import type { IClientsFilters, IUserFilters } from 'src/types/user/user.filters';
 import type { IPageResponse } from 'src/types/pagination.types';
 import { PAGINATION_DEFAULT_PAGE, PAGINATION_DEFAULT_SIZE } from 'src/types/pagination.types';
 
 export const UserService = {
-  async register(payload: ICompanyCreate): Promise<ICompanyCreate> {
-    const { data } = await api.post<ICompanyCreate>('/auth/register', payload);
-    return data;
-  },
-
   async findAll(filters?: IUserFilters): Promise<IPageResponse<IUserWithCompany>> {
     const { data } = await api.get<IPageResponse<IUserWithCompany>>('/users', {
       params: {
@@ -68,5 +62,15 @@ export const UserService = {
   async updateUserPerfil(payload: IUserPerfil): Promise<IUserPerfil> {
     const { data } = await api.put<IUserPerfil>('users/me', payload);
     return data;
+  },
+
+  async uploadUserAvatar(file: File): Promise<void> {
+    const formData = new FormData();
+    formData.append('photo', file);
+    await api.patch(`/users/me/photo`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 };

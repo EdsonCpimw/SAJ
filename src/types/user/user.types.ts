@@ -33,4 +33,5 @@ export interface IUserPerfil {
   name: string;
   lastName: string;
   phone: string;
+  photoUrl: string;
 }

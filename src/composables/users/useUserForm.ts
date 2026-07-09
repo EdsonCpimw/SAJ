@@ -67,6 +67,7 @@ export function useUserForm() {
     name: '',
     lastName: '',
     phone: '',
+    photoUrl: '',
   });
 
   const rulesUserPerfil = {
@@ -75,7 +76,7 @@ export function useUserForm() {
       (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
     ],
     lastName: [
-      (v: string) => !!v || 'Nome é obrigatório',
+      (v: string) => !!v || 'Sobrenome é obrigatório',
       (v: string) => v.length >= 3 || 'Mínimo de 3 caracteres',
     ],
     phone: [
@@ -138,6 +139,24 @@ export function useUserForm() {
     }
   }
 
+  async function updateUserAvatar(file: File) {
+    loading.value = true;
+    error.value = null;
+    try {
+      await UserService.uploadUserAvatar(file);
+    } catch (erro) {
+      if (axios.isAxiosError(erro)) {
+        const data = erro.response?.data;
+        error.value = data?.message || data?.error || `Erro desconhecido`;
+      } else {
+        error.value = 'Erro inesperado';
+      }
+      throw erro;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   async function updateUserPerfil() {
     loading.value = true;
     error.value = null;
@@ -187,5 +206,6 @@ export function useUserForm() {
     updateUser,
     updateUserPerfil,
     fillPerfilForm,
+    updateUserAvatar,
   };
 }
